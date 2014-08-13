@@ -2,15 +2,47 @@
 	var pgFun = {};
 	var $cache = {};
 	var pgScroll = [];
-	pgFun.pubScroll = function() {
-		pgScroll[0] = new IScroll('.wrapper', {
-			click : true,
-			bounce : false
+	pgFun.pubScroll = function(obj) {
+		$cache.mainPg = $('.wrapper');
+		if (obj) {
+			pgScroll[0] = new IScroll($cache.mainPg.get(0), {
+				click : false,
+				bounce : false
+			});
+		} else {
+			pgScroll[0] = new IScroll($cache.mainPg.get(0), {
+				click : true,
+				bounce : false
+			});
+		}
+
+		/*
+		 * 输入框 提示信息 兼容性处理  by 巫书轶
+		 * 用法  tipmsg="str" css : noTip
+		 */
+		$("input[tipMsg]").each(function() {
+			var _thisDom = $(this);
+			if (_thisDom.val() == "") {
+				var oldVal = _thisDom.attr("tipMsg");
+				if (_thisDom.val() == "") {
+					_thisDom.attr("value", oldVal).addClass('noTip');
+				}
+				_thisDom.addClass('noTip').focus(function() {
+					if (_thisDom.val() != oldVal) {
+						_thisDom.removeClass('noTip');
+					} else {
+						_thisDom.val("").addClass('noTip');
+					}
+				}).blur(function() {
+					if (_thisDom.val() == "") {
+						_thisDom.val(oldVal).addClass('noTip');
+					}
+				}).keydown(function() {
+					_thisDom.removeClass('noTip');
+				});
+			}
 		});
-		pgScroll[1] = new IScroll('#pop', {
-			click : true,
-			bounce : false
-		});
+
 	};
 	pgFun.index = function() {
 		this.pubScroll();
@@ -19,7 +51,10 @@
 		$cache.infoCent = $('.info .js .cent');
 		$cache.popHdxq = $('.popHdxq', $cache.pop);
 		$cache.popHdxqX = $('.popHdxqX', $cache.popHdxqX);
-		console.log($cache.yxgzBtn);
+		pgScroll[1] = new IScroll($cache.pop.get(0), {
+			click : true,
+			bounce : false
+		});
 		$cache.yxgzBtn.on('click', function(e) {
 			e.stopPropagation();
 			e.preventDefault();
@@ -36,20 +71,98 @@
 			pgScroll[0].enable();
 		});
 		/*
-		$.getJSON("http://task.wangfan.com/task.ashx", function(data) {
-			console.log(data);
-			$cache.infoCent.append(data.jsonResponse.taskcontent).append('<img src="'+data.jsonResponse.taskbigimg+'" />');
+		 $.getJSON("http://task.wangfan.com/task.ashx", function(data) {
+		 console.log(data);
+		 $cache.infoCent.append(data.jsonResponse.taskcontent).append('<img src="'+data.jsonResponse.taskbigimg+'" />');
+		 });
+		 */
+	};
+	pgFun.regmobile = function() {
+		this.pubScroll();
+	};
+	pgFun.upload = function() {
+		this.pubScroll(true);
+		$cache.upImg = $('#upImg');
+		$cache.imgList = $('.imgList', $cache.upImg);
+		$cache.imgListUl = $('ul', $cache.imgList);
+		$cache.addImg = $('.add', $cache.upImg);
+		$cache.delImg = $('.del', $cache.upImg);
+		$cache.subImg = $('.subImg', $cache.upImg);
+		$cache.addImg.on('click', function(e) {
+			return $cache.subImg.click();
 		});
+		
+		$cache.subImg.on('change', function(e){
+			var file = e.target.files[0];
+			var reader = new FileReader();
+			var image;
+			var reader;
+			reader.readAsDataURL(file);
+			reader.onload = function(){
+				toBase64(reader);
+			};
+			function toBase64(base64) {
+				var imgsrc = base64.result;
+				console.log(imgsrc);
+				image = new Image();
+				image.onload = function(){
+					imageLoad(image);
+				};
+				image.src = imgsrc;
+			};
+			function imageLoad(img) {
+				var imgW = img.width, imgH = img.height;
+				if (imgW > 640) {
+					var scal = 640 / imgW;
+					imgW *= scal;
+					imgH *= scal;
+				}
+				var canvas = document.createElement('canvas');
+				canvas.setAttribute('width', imgW + 'px');
+				canvas.setAttribute('height', imgH + 'px');
+				var context = canvas.getContext('2d');
+				context.drawImage(image, 0, 0, imgW, imgH);
+				context.save();
+				var imgdata = canvas.toDataURL('image/jpeg', 1);
+				var html = $('<li></li>').css('backgroundImage' , 'url("'+imgdata+'")');
+				$cache.imgListUl.append(html);
+			}
+		});
+		/*
+		function toBase64(){
+			console.log(reader);
+			var imgsrc = reader.result;
+			console.log(imgsrc);
+			var html = $('<li></li>').css('backgroundImage' , 'url("'+imgsrc+'")');
+			console.log(html);
+			$cache.imgListUl.append(html);
+		};
 		*/
+		/*
+		 $cache.upImg.on('click', function(e) {
+		 $cache.imgListUl.append('<li></li>');
+		 $cache.imgListLi = $('li', $cache.imgList);
+		 var boxH = $cache.imgListLi.outerHeight();
+		 var boxNum = $cache.imgListLi.size();
+		 if (!(boxNum % 3)) {
+
+		 }
+		 console.log(boxNum);
+		 });
+		 */
 	};
 	global[fun] = pgFun;
+	global['pgScroll'] = pgScroll;
 })('fun', this);
 
 ;(function($) {
-
 	$(document).ready(function() {
-
-		fun.index();
+		var pgNameList = {
+			'index' : 'index',
+			'regmobile' : 'regmobile',
+			'upload' : 'upload'
+		};
+		var pgName = window.pgName;
+		fun[pgNameList[pgName]]();
 	});
-
 })(window.jQuery);
