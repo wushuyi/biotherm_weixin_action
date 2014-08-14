@@ -4,10 +4,14 @@
 	var pgScroll = [];
 	pgFun.pubScroll = function(obj) {
 		$cache.mainPg = $('.wrapper');
-		if (obj) {
+		if (!obj) {
 			pgScroll[0] = new IScroll($cache.mainPg.get(0), {
 				click : false,
+				preventDefaultException : {
+					tagName : /.*/
+				},
 				bounce : false
+
 			});
 		} else {
 			pgScroll[0] = new IScroll($cache.mainPg.get(0), {
@@ -81,31 +85,32 @@
 		this.pubScroll();
 	};
 	pgFun.upload = function() {
-		this.pubScroll(true);
+		this.pubScroll(false);
+		var imgArr = [];
 		$cache.upImg = $('#upImg');
 		$cache.imgList = $('.imgList', $cache.upImg);
 		$cache.imgListUl = $('ul', $cache.imgList);
 		$cache.addImg = $('.add', $cache.upImg);
 		$cache.delImg = $('.del', $cache.upImg);
 		$cache.subImg = $('.subImg', $cache.upImg);
-		$cache.addImg.on('click', function(e) {
-			return $cache.subImg.click();
-		});
-		
-		$cache.subImg.on('change', function(e){
+		$cache.subImg.on('change', function(e) {
+			if (imgArr.length >= 9) {
+				alert('对不起, 最多只能上传9张!');
+				return;
+			}
 			var file = e.target.files[0];
 			var reader = new FileReader();
 			var image;
-			var reader;
 			reader.readAsDataURL(file);
-			reader.onload = function(){
+			reader.onload = function() {
 				toBase64(reader);
 			};
+			$(this).val('');
 			function toBase64(base64) {
 				var imgsrc = base64.result;
-				console.log(imgsrc);
+				//console.log(imgsrc);
 				image = new Image();
-				image.onload = function(){
+				image.onload = function() {
 					imageLoad(image);
 				};
 				image.src = imgsrc;
@@ -124,20 +129,26 @@
 				context.drawImage(image, 0, 0, imgW, imgH);
 				context.save();
 				var imgdata = canvas.toDataURL('image/jpeg', 1);
-				var html = $('<li></li>').css('backgroundImage' , 'url("'+imgdata+'")');
+				var html = $('<li><b>X</b></li>').css('backgroundImage', 'url("' + imgdata + '")');
 				$cache.imgListUl.append(html);
+				imgArr.push('test');
 			}
+
+		});
+		$cache.imgList.on('click', 'b', function(e) {
+			console.log(e);
+			$(this).parent('li').remove();
 		});
 		/*
-		function toBase64(){
-			console.log(reader);
-			var imgsrc = reader.result;
-			console.log(imgsrc);
-			var html = $('<li></li>').css('backgroundImage' , 'url("'+imgsrc+'")');
-			console.log(html);
-			$cache.imgListUl.append(html);
-		};
-		*/
+		 function toBase64(){
+		 console.log(reader);
+		 var imgsrc = reader.result;
+		 console.log(imgsrc);
+		 var html = $('<li></li>').css('backgroundImage' , 'url("'+imgsrc+'")');
+		 console.log(html);
+		 $cache.imgListUl.append(html);
+		 };
+		 */
 		/*
 		 $cache.upImg.on('click', function(e) {
 		 $cache.imgListUl.append('<li></li>');
@@ -151,6 +162,12 @@
 		 });
 		 */
 	};
+	pgFun.taskrank = function(){
+		this.pubScroll();
+	}
+	pgFun.taskhistory = function(){
+		this.pubScroll();
+	}
 	global[fun] = pgFun;
 	global['pgScroll'] = pgScroll;
 })('fun', this);
@@ -160,7 +177,9 @@
 		var pgNameList = {
 			'index' : 'index',
 			'regmobile' : 'regmobile',
-			'upload' : 'upload'
+			'upload' : 'upload',
+			'taskrank' : 'taskrank',
+			'taskhistory': 'taskhistory'
 		};
 		var pgName = window.pgName;
 		fun[pgNameList[pgName]]();
