@@ -39,9 +39,7 @@ textarea:-moz-placeholder { color:#a9a9a9; }
 	background-attachment: fixed;
 	background-position:0 0;
 	&>.scroll{
-		width: 100%;
-		min-height: 1008px;
-		
+		width: 100%;		
 		position: absolute;
 		top: 0px;
 	}
@@ -50,8 +48,6 @@ textarea:-moz-placeholder { color:#a9a9a9; }
 	.nav{
 		width: 100%;
 		height: 70px;
-		position: absolute;
-		top: 0;
 		li{
 				width: 50%;
 				height: 70px;
@@ -95,10 +91,8 @@ textarea:-moz-placeholder { color:#a9a9a9; }
 	.title{
 		width: 328px;
 		height: 75px;
-		position: absolute;
-		top: 100px;
-		left: 50%;
-		margin-left: -164px;
+		margin: 0 auto;
+		margin-top: 36px;
 		background-image: url('../image/title.png');
 		background-repeat: no-repeat;
 		background-position: center center;
@@ -106,45 +100,13 @@ textarea:-moz-placeholder { color:#a9a9a9; }
 	}
 	.info{
 		width: 100%;
-		height: 800px;
-		position: absolute;
-		top: 180px;
-		left: 0px;
-		.bdBtn{
-			width: 282px;
-			height: 80px;
-			position: absolute;
-			top: 0px;
-			left: 34px;
-			background-image: url('../image/top_btn1.png');
-			background-repeat: no-repeat;
-			background-position: center center;
-			background-size: 100% auto;
-			cursor: pointer;
-		}
-		.mdBtn{
-			width: 282px;
-			height: 74px;
-			top: 0px;
-			right: 34px;
-			position: absolute;
-			background-image: url('../image/top_btn2.png');
-			background-repeat: no-repeat;
-			background-position: center center;
-			background-size: 100% auto;
-			cursor: pointer;
-		}
+		position: relative;
 		.centBox{
 			width: 602px;
-			height: 644px;
-			top: 80px;
-			left: 20px;
-			padding:50px 30px 20px 30px;
-			position: absolute;
-			background-image: url('../image/info_bg.png');
-			background-repeat: no-repeat;
-			background-position: center center;
-			background-size: 100% auto;
+			height: 100%;
+			top: 0px;
+			margin-left: 20px;
+			padding:20px 30px 0px 30px;
 			hr{
 				border-top: 1px dashed #FFFFFF;
 			}
@@ -182,44 +144,50 @@ textarea:-moz-placeholder { color:#a9a9a9; }
 				background-position: 150px 6px;
 			}
 			.js .cent{
-				width: 100%;
-				height: 420px;
-				position: absolute;
-				bottom: 0px;
-				display: block;
-				left: 0px;
+				width: 640px;
+				margin-left: -50px;
+				.topCent{
+					font-size: 22px;
+					color: #FFFFFF;
+					text-align: center;
+					line-height: 38px;
+				}
+				.lqrwBtn{
+					width: 304px;
+					height: 72px;
+					margin-top: 40px;
+					margin-left: 164px;
+					background-color: #FFA400;
+					background-image: url('../image/bt_btn2.png');
+					background-repeat: no-repeat;
+					background-position: center center;
+					background-size: 221px auto;
+					border-radius: 8px;
+					cursor: pointer;
+				}
+				.mainPic{
+					display: block;
+					height: 318px;
+				}
 			}
-		}
+		}		
+	}
+	.btNav{
+		width: 640px;
+		height: 92px;
+		background-image: url('../image/bt_nav.png');
+		background-repeat: no-repeat;
+		background-size: 100% auto;
 		.yxgzBtn{
-			width: 286px;
-			height: 72px;
-			position: absolute;
-			bottom: 0px;
-			left: 30px;
-			background-color: #258FB6;
-			background-image: url('../image/bt_btn1.png');
-			background-repeat: no-repeat;
-			background-position: center center;
-			background-size: 221px auto;
-			border-radius: 14px;
-			cursor: pointer;
+			
 		}
-		.lqrwBtn{
-			width: 286px;
-			height: 72px;
-			position: absolute;
-			bottom: 0px;
-			right: 30px;
-			background-color: #FFA400;
-			background-image: url('../image/bt_btn2.png');
-			background-repeat: no-repeat;
-			background-position: center center;
-			background-size: 221px auto;
-			border-radius: 14px;
-			cursor: pointer;
+		.qxpdBtn{
+			
+		}
+		.hjmdBtn{
+			
 		}
 	}
-	
 }
 #main{
 	#titBox{
@@ -948,6 +916,7 @@ textarea:-moz-placeholder { color:#a9a9a9; }
 			color: #FFFFFF;
 			font-size: 30px;
 			font-weight: bold;
+			margin-bottom: 30px;
 			background-color: #FFA400;
 			border-radius: 8px;
 			position: absolute;
@@ -1090,6 +1059,7 @@ textarea:-moz-placeholder { color:#a9a9a9; }
 			margin-left: auto;
 			margin-right: auto;
 			margin-top: 30px;
+			margin-bottom: 30px;
 			background-color: #FFA400;
 			border-radius: 8px;
 			cursor: pointer;
