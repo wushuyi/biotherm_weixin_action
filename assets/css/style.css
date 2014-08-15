@@ -52,6 +52,15 @@ textarea:-moz-placeholder {
 /*
  * main styles
  */
+a.block {
+  width: 100%;
+  height: 100%;
+  background: transparent;
+  position: absolute;
+  left: 0px;
+  right: 0px;
+  display: block;
+}
 .wrapper {
   width: 640px;
   top: 0px;
@@ -194,14 +203,19 @@ textarea:-moz-placeholder {
 #index .info .centBox .js .cent .lqrwBtn {
   width: 304px;
   height: 72px;
-  margin-top: 40px;
+  margin-top: 14px;
   margin-left: 164px;
+  padding-right: 30px;
   background-color: #FFA400;
-  background-image: url('../image/bt_btn2.png');
+  background-image: url('../image/icon_6.png');
   background-repeat: no-repeat;
-  background-position: center center;
-  background-size: 221px auto;
+  background-position: 250px 22px;
+  background-size: 17px auto;
   border-radius: 8px;
+  font-size: 34px;
+  color: #FFFFFF;
+  text-align: center;
+  line-height: 72px;
   cursor: pointer;
 }
 #index .info .centBox .js .cent .mainPic {
@@ -215,6 +229,27 @@ textarea:-moz-placeholder {
   background-image: url('../image/bt_nav.png');
   background-repeat: no-repeat;
   background-size: 100% auto;
+}
+#index .btNav .yxgzBtn {
+  width: 212px;
+  height: 100%;
+  cursor: pointer;
+  float: left;
+  position: relative;
+}
+#index .btNav .qxpdBtn {
+  width: 214px;
+  height: 100%;
+  cursor: pointer;
+  float: left;
+  position: relative;
+}
+#index .btNav .hjmdBtn {
+  width: 212px;
+  height: 100%;
+  cursor: pointer;
+  float: left;
+  position: relative;
 }
 #main #titBox {
   padding-top: 16px;
