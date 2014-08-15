@@ -164,10 +164,13 @@
 	};
 	pgFun.taskrank = function(){
 		this.pubScroll();
-	}
+	};
 	pgFun.taskhistory = function(){
 		this.pubScroll();
-	}
+	};
+	pgFun.main = function(){
+		this.pubScroll();
+	};
 	global[fun] = pgFun;
 	global['pgScroll'] = pgScroll;
 })('fun', this);
@@ -179,7 +182,8 @@
 			'regmobile' : 'regmobile',
 			'upload' : 'upload',
 			'taskrank' : 'taskrank',
-			'taskhistory': 'taskhistory'
+			'taskhistory': 'taskhistory',
+			'main' : 'main'
 		};
 		var pgName = window.pgName;
 		fun[pgNameList[pgName]]();

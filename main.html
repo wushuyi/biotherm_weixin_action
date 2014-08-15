@@ -25,49 +25,70 @@
 	</head>
 
 	<body>
-		<div class="wrapper" id="index">
+		<div class="wrapper" id="main">
 			<div class="scroll">
-				<div class="nav">
+				<div id="titBox">
+					<h3 class="name">小巫</h3>
+					<div class="portrait" style="background-image: url('./assets/image/test.png')"></div>
+					
+					<h2 class="title">我的精华时刻</h2>
+					<p class="cent">
+						这一个月的时间内，通过每晚睡前的记录，让自己回顾了一整天的美好片段，整个人心情变得轻松愉悦的同时觉得自己似乎也因此变得更年轻更有活力。
+					</p>
+				</div>
+				<div id="imgBox">
 					<ul>
-						<li class="action"></li>
-						<li ></li>
+						<li></li>
+						<li></li>
+						<li></li>
 					</ul>
 				</div>
-				<div class="title"></div>
-				<div class="info">
-					<div class="bdBtn"></div>
-					<div class="mdBtn"></div>
-					<div class="centBox">
-						<p class="rw">
-							<span class="tit">任　　务:　 </span>
-							<span class="cent">我的精华时刻</span>
-						</p>
-						<p class="sj">
-							<span class="tit">时　　间:　 </span>
-							<span class="cent">2014.9.8 - 9.21</span>
-						</p>
-						<hr />
-						<p class="js">
-							<span class="tit">任务介绍:</span>
-							<span class="cent"></span>
-						</p>
+				<div class="activeBox">
+					<div id="yqdz1">
+						<div class='yqtx'>友情提醒</div>
+						<div class="tit">
+							分享你的完成经历至朋友圈，<br/>邀请朋友为你点赞，助你登上泉心榜单！<br/>赢取挚爱好礼 !
+						</div>
+						<button class="submit">邀请朋友来点赞</button>
 					</div>
-					<div class="yxgzBtn"></div>
-					<div class="lqrwBtn"></div>
+					<div id="yqdz2">
+						<div class='tit'>你目前的点赞数</div>
+						<div class="numBox">
+							<span class="num">178</span>
+						</div>
+						<button class="submit">邀请朋友来点赞</button>
+					</div>
+					<div id="yqdz3">
+						<div class='tit'>点赞支持</div>
+						<div class='cent'>
+							关注碧欧泉官方微信，<br/>
+							并为好友点赞支持<br/>
+							即有机会参与泉心好帮手抽奖。
+						</div>
+						<div class="loveBtn">
+						</div>
+						<button class="weixin">关注碧欧泉官方微信</button>
+						<button class="submit">开启我的泉心旅程</button>
+					</div>
+					<div id="yqdz4">
+						<div class='tit'>点赞支持</div>
+						<div class="loveBtn">
+						</div>
+						<button class="submit">开启我的泉心旅程</button>
+					</div>
 				</div>
 			</div>
 			<div id="pop">
-				<div class="scroll">
-					<div class="popHdxq">
-						<div class="popHdxqX"></div>
-					</div>
-				</div>
+				<div class="scroll"></div>
 				<div class="popBg"></div>
 			</div>
 		</div>
 
 		<script src="assets/js/libs/jquery-1.11.1.min.js"></script>
 		<script src="assets/js/libs/iscroll-5.1.1.min.js"></script>
+		<script>
+			window.pgName = 'main';
+		</script>
 		<script src="assets/js/functions.js"></script>
 	</body>
 </html>
