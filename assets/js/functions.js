@@ -1,36 +1,50 @@
+;(function() {
+	// 判断浏览器是否为微信浏览器
+	window.pgLock = false;
+	var url = $.url();
+	var isdebug = url.fparam('isdebug');
+	var is_weixin = (function() {
+		var ua = navigator.userAgent.toLowerCase();
+		if (ua.match(/MicroMessenger/i) == "micromessenger") {
+			return true;
+		} else {
+			return false;
+		}
+	})();
+
+	var have_openid = (function() {
+		if ($.cookie('taskOpenID')) {
+			return true;
+		} else {
+			return false;
+		}
+	})();
+
+	if (isdebug) {
+		if (!have_openid) {
+			window.location.href = '/Handler.ashx';
+		}
+	} else {
+		if (!is_weixin) {
+			//alert('请在微信浏览器中打开!');
+			//window.location.href = 'http://m.biotherm.com.cn/';
+		} else if (!have_openid) {
+
+			window.location.href = '/Handler.ashx';
+		} else {
+			window.pgLock = true;
+		}
+	}
+
+	window.pgLock = true;
+})();
+
 ;(function(fun, global) {
 	var inface = {};
 	var pgFun = {};
 	var $cache = {};
 	var pgScroll = [];
 	pgFun.pubInit = function() {
-		// 判断浏览器是否为微信浏览器
-		var is_weixin = (function() {
-			var ua = navigator.userAgent.toLowerCase();
-			if (ua.match(/MicroMessenger/i) == "micromessenger") {
-				return true;
-			} else {
-				return false;
-			}
-		})();
-
-		var have_openid = (function() {
-			if ($.cookie('taskOpenID')) {
-				return true;
-			} else {
-				return false;
-			}
-		})();
-
-		/*
-		 if (!is_weixin) {
-		 alert('请在微信浏览器中打开!');
-		 window.location.href = 'http://m.biotherm.com.cn/';
-		 } else if (!have_openid) {
-		 window.location.href = '/task.ashx';
-		 }
-		 */
-
 		/*
 		 * 输入框 提示信息 兼容性处理  by 巫书轶
 		 * 用法  tipmsg="str" css : noTip
@@ -77,6 +91,7 @@
 		}
 	};
 	pgFun.index = function() {
+
 		this.pubInit();
 		this.pubScroll();
 		$cache.yxgzBtn = $('.yxgzBtn');
@@ -323,93 +338,143 @@
 		this.pubInit();
 		this.pubScroll(false);
 		var imgArr = [];
+		
+		 Array.prototype.remove = function(dx) {
+		 　		if(isNaN(dx)||dx>this.length){return false;}
+		 　　		for(var i=0,n=0;i<this.length;i++)
+		 　		　{
+		 　　		　　if(this[i]!=this[dx])
+		 　　		　　{
+		 　	　　　　　this[n++]=this[i]
+		 　		　　　}
+		 　		　}
+		 　		　this.length-=1
+		 　		};
+		
 		$cache.upImg = $('#upImg');
+		$cache.textCent = $('#upload .cent');
 		$cache.imgList = $('.imgList', $cache.upImg);
 		$cache.imgListUl = $('ul', $cache.imgList);
 		$cache.addImg = $('.add', $cache.upImg);
 		$cache.delImg = $('.del', $cache.upImg);
 		$cache.subImg = $('.subImg', $cache.upImg);
+		$cache.submit = $('.submit', $cache.upImg);
+
 		var taskid = $.cookie('taskid');
 
-		function ajaxFileUpload() {
-			$.ajaxFileUpload({
-				url : "/uploadtaskimg.ashx?taskid=" + taskid,
-				secureuri : false,
-				fileElementId : "upPic",
-				dataType : "json",
-				beforeSend : function() {
-					//$("#loading").show(); //该图用来显示上传图片ing
-				},
-				complete : function() {
-					//$("#loading").hide(); //隐藏该图
-					//$("#upPic").val("");
-				},
-				success : function(data, status) {
-					console.log(data);
-					if (data.result == "success") {
-						var _pic = data.jsonResponse;
-						imgArr.push(_pic);
-						console.log(_pic);
-					} else if (data.result = "failed") {
-						alert('上传失败!');
-					}
+		/*
+		 if (imgArr.length >= 9) {
+		 alert('对不起, 最多只能上传9张!');
+		 return;
+		 }
+		 */
 
-				},
-				error : function(data, status, e) {
-					//alert("error...");
-					//alert(e);
-				}
-			});
-		}
-
-
-		$cache.subImg.on('change', function(e) {
-			if (imgArr.length >= 9) {
-				alert('对不起, 最多只能上传9张!');
-				return;
-			}
-			ajaxFileUpload();
-			var file = e.target.files[0];
-			var reader = new FileReader();
-			var image;
-			reader.readAsDataURL(file);
-			reader.onload = function() {
-				toBase64(reader);
-			};
-			//$(this).val('');
-			function toBase64(base64) {
-				var imgsrc = base64.result;
-				//console.log(imgsrc);
-				image = new Image();
-				image.onload = function() {
-					imageLoad(image);
+		$('#upImg').dmUploader({
+			url : '/uploadtaskimg.ashx?taskid=' + taskid,
+			dataType : 'json',
+			allowedTypes : 'image/*',
+			onNewFile : function(id, file) {
+				//console.log(file);
+				var reader = new FileReader();
+				var image;
+				reader.readAsDataURL(file);
+				reader.onload = function() {
+					toBase64(reader);
 				};
-				image.src = imgsrc;
-			};
-			function imageLoad(img) {
-				var imgW = img.width, imgH = img.height;
-				if (imgW > 640) {
-					var scal = 640 / imgW;
-					imgW *= scal;
-					imgH *= scal;
+				$(this).val('');
+				function toBase64(base64) {
+					var imgsrc = base64.result;
+					//console.log(imgsrc);
+					image = new Image();
+					image.onload = function() {
+						imageLoad(image);
+					};
+					image.src = imgsrc;
+				};
+				function imageLoad(img) {
+					var imgW = img.width, imgH = img.height;
+					if (imgW > 640) {
+						var scal = 640 / imgW;
+						imgW *= scal;
+						imgH *= scal;
+					}
+					var canvas = document.createElement('canvas');
+					canvas.setAttribute('width', imgW + 'px');
+					canvas.setAttribute('height', imgH + 'px');
+					var context = canvas.getContext('2d');
+					context.drawImage(image, 0, 0, imgW, imgH);
+					context.save();
+					var imgdata = canvas.toDataURL('image/jpeg', 1);
+					var html = $('<li><b>X</b></li>').css('backgroundImage', 'url("' + imgdata + '")');
+					$cache.imgListUl.append(html);
+					pgScroll[0].refresh();
 				}
-				var canvas = document.createElement('canvas');
-				canvas.setAttribute('width', imgW + 'px');
-				canvas.setAttribute('height', imgH + 'px');
-				var context = canvas.getContext('2d');
-				context.drawImage(image, 0, 0, imgW, imgH);
-				context.save();
-				var imgdata = canvas.toDataURL('image/jpeg', 1);
-				var html = $('<li><b>X</b></li>').css('backgroundImage', 'url("' + imgdata + '")');
-				$cache.imgListUl.append(html);
-				imgArr.push('test');
-				pgScroll[0].refresh();
-			}
 
+			},
+			onUploadSuccess : function(id, data) {
+				if (data.result == 'success') {
+					imgArr.push(data.jsonResponse);
+				} else if (data.result == 'failed') {
+					alert('上传失败!');
+				} else {
+					alert('服务器错误!');
+				}
+				//alert(data.jsonResponse);
+			},
+			onUploadProgress : function(id, percent) {
+				//$('.cent').html(percent);
+			}
 		});
 		$cache.imgList.on('click', 'b', function(e) {
-			console.log(e);
-			$(this).parent('li').remove();
+			var li = $(this).parent('li');
+			var index = li.index();
+			var data = {
+				taskid : taskid,
+				imgurl : imgArr[index]
+			};
+			$.ajax({
+				type : "POST",
+				url : "/deltaskimg.ashx?taskid=" + taskid,
+				data : data,
+				success : function(data) {
+					if (data.result == 'success') {
+						imgArr.remove(index);
+						li.remove();
+					} else if (data.result == 'failed') {
+						alert('服务器错误!');
+					}
+				},
+				error : function() {
+					alert('加载失败,请检查您的网络!');
+				}
+			});
+
+		});
+		$cache.submit.on('click', function(e) {
+			var data = {
+				content: $cache.textCent.val(),
+				taskid: taskid
+			};
+			for (var i = 0; i <= imgArr.length; i++) {
+				var key = 'img' + (i + 1);
+				data[key] = imgArr[i];
+			}
+			$.ajax({
+				type : "POST",
+				url : "/tasksubmit.ashx",
+				data : data,
+				success : function(data) {
+					if (data.result == 'success') {
+						alert("发布任务成功!");
+						window.location.href = './main.html#type=init';
+					} else if (data.result == 'failed') {
+						alert('服务器错误!');
+					}
+				},
+				error : function() {
+					alert('加载失败,请检查您的网络!');
+				}
+			});
 		});
 	};
 	pgFun.taskrank = function() {
@@ -423,7 +488,7 @@
 			type : "GET",
 			dataType : 'json',
 			//url : "/taskrank.ashx",
-			url : "./assets/json/taskrank.json",
+			url : "./assets/json/taskrank.js",
 			cache : false,
 			success : function(data) {
 				//console.log(data);
@@ -485,7 +550,7 @@
 			type : "GET",
 			dataType : 'json',
 			//url : "/taskhistory.ashx",
-			url : "./assets/json/taskhistory.json",
+			url : "./assets/json/taskhistory.js",
 			cache : false,
 			success : function(data) {
 				//console.log(data);
@@ -519,10 +584,38 @@
 		this.pubInit();
 		this.pubScroll();
 		$cache.titBox = $('#titBox');
-		$cache.imgBox = $('#imgBox ul', $cache.tmpHtml);
+		$cache.imgBox = $('#imgBox ul');
+		$cache.imgBoxLi = $('li', $cache.imgBox);
 		$cache.pop = $('#pop');
 		$cache.popShare1 = $('.popShare1', $cache.pop);
 		$cache.popShare2 = $('.popShare2', $cache.pop);
+		$cache.zoomImg = $('#zoomImg');
+		$cache.imgBoxX = $('.imgBoxX', '#zoomImg');
+		$cache.zoomImgUl = $('ul', $cache.zoomImg);
+		$cache.zoomImgLi = $('li', $cache.zoomImgUl);
+		$cache.zoomImgUl.width($cache.zoomImgLi.size() * 640);
+		pgScroll[1] = new IScroll($cache.zoomImg.get(0), {
+			scrollX : true,
+			scrollY : false,
+			click : true,
+			momentum : false,
+			snap : true,
+			snapSeed : 400,
+			keyBindings : true
+		});
+		console.log($cache.imgBoxLi);
+		$cache.imgBox.on('click', 'li', function(e) {
+			pgScroll[0].disable();
+			var $self = $(this);
+			var index = $self.index();
+			$cache.zoomImg.show();
+			pgScroll[1].refresh();
+			pgScroll[1].scrollToElement($('li', $cache.zoomImgUl).eq(index).get(0), 0);
+		});
+		$cache.imgBoxX.on('click', function(e) {
+			pgScroll[0].enable();
+			$cache.zoomImg.hide();
+		});
 		var url = $.url();
 		var pgType = url.fparam('type');
 		var taskid = url.fparam('taskid');
@@ -533,16 +626,17 @@
 			$.ajax({
 				type : "GET",
 				dataType : 'json',
-				url : "/getusertask.json",
+				url : "/getusertask.js",
 				cache : false,
 				success : function(data) {
 					//console.log(data);
 					if (data.result == 'success') {
 						var result = data.jsonResponse;
-						var img, imgArr = [], imgList = '';
+						var img, imgIndex = 0, imgList = '';
 						for (img in result) {
+							imgIndex += 1;
 							if (img.match('img')) {
-								imgList += '<li style="background-image: url(' + row[img] + '); background-size: 100% auto;"></li>';
+								imgList += '<li id="img' + imgIndex + '" style="background-image: url(' + row[img] + '); background-size: 100% auto;"></li>';
 							}
 						}
 						$cache.titBox.attr('id', result.id);
@@ -557,6 +651,10 @@
 					alert('加载失败,请检查您的网络!');
 				}
 			});
+		};
+		
+		function getusertaskfriend(){
+			
 		};
 
 		switch(pgType) {
@@ -682,7 +780,11 @@
 })('fun', this);
 
 ;(function($) {
+
 	$(document).ready(function() {
+		if (!window.pgLock) {
+			return false;
+		}
 		var pgNameList = {
 			'index' : 'index',
 			'regmobile' : 'regmobile',
@@ -694,4 +796,5 @@
 		var pgName = window.pgName;
 		fun[pgNameList[pgName]]();
 	});
+
 })(window.jQuery);
