@@ -58,7 +58,7 @@ a.block {
   background: transparent;
   position: absolute;
   left: 0px;
-  right: 0px;
+  top: 0px;
   display: block;
 }
 .wrapper {
@@ -78,6 +78,9 @@ a.block {
   width: 100%;
   position: absolute;
   top: 0px;
+}
+.data {
+  display: none;
 }
 #index .nav {
   width: 100%;
@@ -350,6 +353,9 @@ a.block {
   border-radius: 4px;
   border: 2px solid #7ED1F0;
   background-color: #FFFFFF;
+  background-size: 100% auto;
+  background-position: 50% 50%;
+  background-repeat: no-repeat;
 }
 #main #yqdz1 {
   display: none;
@@ -568,6 +574,7 @@ a.block {
   background-position: 440px 24px;
 }
 #main #yqdz4 {
+  display: none;
   height: 380px;
   width: 100%;
   margin-top: 30px;
@@ -834,6 +841,9 @@ a.block {
   border-radius: 4px;
   border: 2px solid #7ED1F0;
   background-color: #FFFFFF;
+  background-size: 100% auto;
+  background-position: 50% 50%;
+  background-repeat: no-repeat;
 }
 #taskhistory #rankBox .centBox .btCent .numBox {
   display: inline-block;
@@ -878,7 +888,6 @@ a.block {
 #pop > .scroll {
   position: absolute;
   width: 100%;
-  min-height: 1008px;
   z-index: 1;
 }
 #pop .popBg {
@@ -892,7 +901,7 @@ a.block {
   z-index: 0;
 }
 #pop .popHdxq {
-  position: absolute;
+  position: relative;
   width: 640px;
   height: 840px;
   background-image: url('../image/pop_box.png');
@@ -905,6 +914,22 @@ a.block {
   width: 556px;
   height: 78px;
   cursor: pointer;
+}
+#pop .popShare1 {
+  width: 640px;
+  height: 200px;
+  background-image: url('../image/share_pop1.png');
+  background-position: 60px 40px;
+  background-repeat: no-repeat;
+  display: none;
+}
+#pop .popShare2 {
+  width: 640px;
+  height: 200px;
+  background-image: url('../image/share_pop2.png');
+  background-position: 170px 40px;
+  background-repeat: no-repeat;
+  display: none;
 }
 #regmobile .pgTop {
   height: 70px;
@@ -1139,6 +1164,7 @@ a.block {
   background-size: 33px auto;
   background-position: 150px 20px;
   letter-spacing: 4px;
+  position: relative;
 }
 #taskrank #rankBox {
   position: relative;
@@ -1360,6 +1386,9 @@ a.block {
   border-radius: 4px;
   border: 2px solid #7ED1F0;
   background-color: #FFFFFF;
+  background-size: 100% auto;
+  background-position: 50% 50%;
+  background-repeat: no-repeat;
 }
 /* Print styles
 -------------------------------------------------------------------------------*/

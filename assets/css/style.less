@@ -32,7 +32,7 @@ textarea:-moz-placeholder { color:#a9a9a9; }
 	background: transparent;
 	position: absolute;
 	left: 0px;
-	right: 0px;
+	top: 0px;
 	display: block;
  }
 .wrapper{
@@ -52,6 +52,9 @@ textarea:-moz-placeholder { color:#a9a9a9; }
 		position: absolute;
 		top: 0px;
 	}
+}
+.data{
+	display: none;
 }
 #index{
 	.nav{
@@ -316,6 +319,9 @@ textarea:-moz-placeholder { color:#a9a9a9; }
 			border-radius: 4px;
 			border: 2px solid #7ED1F0;
 			background-color: #FFFFFF;
+			background-size: 100% auto;
+			background-position: 50% 50%;
+			background-repeat: no-repeat;
 		}
 	}
 	#yqdz1{
@@ -535,6 +541,7 @@ textarea:-moz-placeholder { color:#a9a9a9; }
 		}
 	}
 	#yqdz4{
+		display: none;
 		height: 380px;
 		width: 100%;
 		margin-top: 30px;
@@ -794,6 +801,9 @@ textarea:-moz-placeholder { color:#a9a9a9; }
 						border-radius: 4px;
 						border: 2px solid #7ED1F0;
 						background-color: #FFFFFF;
+						background-size: 100% auto;
+						background-position: 50% 50%;
+						background-repeat: no-repeat;
 					}
 				}
 				.numBox{
@@ -843,7 +853,6 @@ textarea:-moz-placeholder { color:#a9a9a9; }
 	&>.scroll{
 		position: absolute;
 		width: 100%;
-		min-height: 1008px;
 		z-index: 1;
 	}
 	.popBg{
@@ -857,7 +866,7 @@ textarea:-moz-placeholder { color:#a9a9a9; }
 		z-index: 0;
 	}
 	.popHdxq{
-		position: absolute;
+		position: relative;
 		width: 640px;
 		height: 840px;
 		background-image: url('../image/pop_box.png');
@@ -871,6 +880,22 @@ textarea:-moz-placeholder { color:#a9a9a9; }
 		width: 556px;
 		height: 78px;
 		cursor: pointer;
+	}
+	.popShare1{
+		width: 640px;
+		height: 200px;
+		background-image: url('../image/share_pop1.png');
+		background-position: 60px 40px;
+		background-repeat: no-repeat;
+		display: none;
+	}
+	.popShare2{
+		width: 640px;
+		height: 200px;
+		background-image: url('../image/share_pop2.png');
+		background-position: 170px 40px;
+		background-repeat: no-repeat;
+		display: none;
 	}
 }
 #regmobile{
@@ -1111,6 +1136,7 @@ textarea:-moz-placeholder { color:#a9a9a9; }
 		background-size: 33px auto;
 		background-position: 150px 20px;
 		letter-spacing: 4px;
+		position: relative;
 	}
 	#rankBox{
 		position: relative;
@@ -1328,6 +1354,9 @@ textarea:-moz-placeholder { color:#a9a9a9; }
 							border-radius: 4px;
 							border: 2px solid #7ED1F0;
 							background-color: #FFFFFF;
+							background-size: 100% auto;
+							background-position: 50% 50%;
+							background-repeat: no-repeat;
 						}
 					}
 				}

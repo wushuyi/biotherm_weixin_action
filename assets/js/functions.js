@@ -3,24 +3,33 @@
 	var pgFun = {};
 	var $cache = {};
 	var pgScroll = [];
+	pgFun.pubInit = function() {
+		// 判断浏览器是否为微信浏览器
+		var is_weixin = (function() {
+			var ua = navigator.userAgent.toLowerCase();
+			if (ua.match(/MicroMessenger/i) == "micromessenger") {
+				return true;
+			} else {
+				return false;
+			}
+		})();
 
-	pgFun.pubScroll = function(obj) {
-		$cache.mainPg = $('.wrapper');
-		if (!obj) {
-			pgScroll[0] = new IScroll($cache.mainPg.get(0), {
-				click : false,
-				preventDefaultException : {
-					tagName : /.*/
-				},
-				bounce : false
+		var have_openid = (function() {
+			if ($.cookie('taskOpenID')) {
+				return true;
+			} else {
+				return false;
+			}
+		})();
 
-			});
-		} else {
-			pgScroll[0] = new IScroll($cache.mainPg.get(0), {
-				click : true,
-				bounce : false
-			});
-		}
+		/*
+		 if (!is_weixin) {
+		 alert('请在微信浏览器中打开!');
+		 window.location.href = 'http://m.biotherm.com.cn/';
+		 } else if (!have_openid) {
+		 window.location.href = '/task.ashx';
+		 }
+		 */
 
 		/*
 		 * 输入框 提示信息 兼容性处理  by 巫书轶
@@ -48,9 +57,27 @@
 				});
 			}
 		});
+	};
+	pgFun.pubScroll = function(obj) {
+		$cache.mainPg = $('.wrapper');
+		if (!obj) {
+			pgScroll[0] = new IScroll($cache.mainPg.get(0), {
+				click : false,
+				preventDefaultException : {
+					tagName : /.*/
+				},
+				bounce : false
 
+			});
+		} else {
+			pgScroll[0] = new IScroll($cache.mainPg.get(0), {
+				click : true,
+				bounce : false
+			});
+		}
 	};
 	pgFun.index = function() {
+		this.pubInit();
 		this.pubScroll();
 		$cache.yxgzBtn = $('.yxgzBtn');
 		$cache.pop = $('#pop');
@@ -122,7 +149,7 @@
 									},
 									error : function() {
 										lqrwBtnLock = false;
-										alert('加载失败请检查您的网络!');
+										alert('加载失败,请检查您的网络!');
 									}
 								});
 							});
@@ -141,7 +168,6 @@
 							$cache.lqrwBtn.html('活动过期').css('backgroundColor', '#969A9F');
 							break;
 						default:
-							break;
 					}
 
 				} else if (data.result == 'failed') {
@@ -156,7 +182,7 @@
 				}
 			},
 			error : function() {
-				alert('加载失败请检查您的网络!');
+				alert('加载失败,请检查您的网络!');
 			}
 		});
 
@@ -181,6 +207,7 @@
 		});
 	};
 	pgFun.regmobile = function() {
+		this.pubInit();
 		this.pubScroll();
 		$cache.upBox = $('#updata');
 		$cache.mobile = $('input.mobile', $cache.upBox);
@@ -243,7 +270,7 @@
 				},
 				error : function() {
 					subAllLock = false;
-					alert('加载失败请检查您的网络!');
+					alert('加载失败,请检查您的网络!');
 				}
 			});
 		});
@@ -287,12 +314,13 @@
 				},
 				error : function() {
 					subCodeLock = false;
-					alert('加载失败请检查您的网络!');
+					alert('加载失败,请检查您的网络!');
 				}
 			});
 		});
 	};
 	pgFun.upload = function() {
+		this.pubInit();
 		this.pubScroll(false);
 		var imgArr = [];
 		$cache.upImg = $('#upImg');
@@ -304,39 +332,34 @@
 		var taskid = $.cookie('taskid');
 
 		function ajaxFileUpload() {
-			if ($("#upPic").val() != "") {
-				$.ajaxFileUpload({
-					url : "/uploadtaskimg.ashx?taskid=15",
-					secureuri : false,
-					fileElementId : "upPic",
-					dataType : "json",
-					beforeSend : function() {
-						//$("#loading").show(); //该图用来显示上传图片ing
-					},
-					complete : function() {
-						//$("#loading").hide(); //隐藏该图
-						//$("#upPic").val("");
-					},
-					success : function(data, status) {
-						console.log(data);
-						if (data.result == "success") {
-							var _pic = data.jsonResponse;
-							imgArr.push(_pic);
-							console.log(_pic);
-						} else if (data.result = "failed") {
-							alert('上传失败!');
-						}
-
-					},
-					error : function(data, status, e) {
-						alert("error...");
-						alert(e);
+			$.ajaxFileUpload({
+				url : "/uploadtaskimg.ashx?taskid=" + taskid,
+				secureuri : false,
+				fileElementId : "upPic",
+				dataType : "json",
+				beforeSend : function() {
+					//$("#loading").show(); //该图用来显示上传图片ing
+				},
+				complete : function() {
+					//$("#loading").hide(); //隐藏该图
+					//$("#upPic").val("");
+				},
+				success : function(data, status) {
+					console.log(data);
+					if (data.result == "success") {
+						var _pic = data.jsonResponse;
+						imgArr.push(_pic);
+						console.log(_pic);
+					} else if (data.result = "failed") {
+						alert('上传失败!');
 					}
-				});
-				return false;
-			} else {
-				return false;
-			}
+
+				},
+				error : function(data, status, e) {
+					//alert("error...");
+					//alert(e);
+				}
+			});
 		}
 
 
@@ -388,73 +411,72 @@
 			console.log(e);
 			$(this).parent('li').remove();
 		});
-		/*
-		 function toBase64(){
-		 console.log(reader);
-		 var imgsrc = reader.result;
-		 console.log(imgsrc);
-		 var html = $('<li></li>').css('backgroundImage' , 'url("'+imgsrc+'")');
-		 console.log(html);
-		 $cache.imgListUl.append(html);
-		 };
-		 */
-		/*
-		 $cache.upImg.on('click', function(e) {
-		 $cache.imgListUl.append('<li></li>');
-		 $cache.imgListLi = $('li', $cache.imgList);
-		 var boxH = $cache.imgListLi.outerHeight();
-		 var boxNum = $cache.imgListLi.size();
-		 if (!(boxNum % 3)) {
-
-		 }
-		 console.log(boxNum);
-		 });
-		 */
 	};
 	pgFun.taskrank = function() {
+		this.pubInit();
 		this.pubScroll();
+		$cache.rankBox = $('#rankBox');
+		$cache.tmpHtml = $($('#tmp1').html());
+		$cache.rankCent = $('.rankCent', $cache.rankBox);
+		$cache.resultHtml = '';
+		$.ajax({
+			type : "GET",
+			dataType : 'json',
+			//url : "/taskrank.ashx",
+			url : "./assets/json/taskrank.json",
+			cache : false,
+			success : function(data) {
+				//console.log(data);
+				if (data.result == 'success') {
+					var result = data.jsonResponse;
+					var rows = result.Rows;
+					var key;
+					for (key in rows) {
+						var row = rows[key];
+						var img, imgArr = [], imgList = '';
+						for (img in row) {
+							if (img.match('img')) {
+								//imgArr.push(row[img]);
+								imgList += '<li style="background-image: url(' + row[img] + '); background-size: 100% auto;"></li>';
+							}
+						}
+						//console.log(imgArr);
+						//console.log(rows[key]);
+						$cache.tmpHtml.attr('id', row.id);
+						$cache.tmpHtml.attr('openid', row.openid);
+						$('.index', $cache.tmpHtml).html(row.rank);
+						$('.name', $cache.tmpHtml).html(row.username);
+						$('.cent', $cache.tmpHtml).html(row.content);
+						$('.num', $cache.tmpHtml).html(row.lovenum);
+						$('.imgBox ul', $cache.tmpHtml).html(imgList);
+						$cache.resultHtml += $cache.tmpHtml.prop("outerHTML");
+					}
+					$cache.rankCent.append($cache.resultHtml);
+					pgScroll[0].refresh();
+				} else if (data.result == 'failed') {
+					alert('服务器错误!');
+				}
+			},
+			error : function() {
+				alert('加载失败,请检查您的网络!');
+			}
+		});
 	};
 	pgFun.taskhistory = function() {
+		this.pubInit();
 		this.pubScroll();
-		var tmp = '<div class="rankInfo">'+
-							'<div class="role">'+
-								'<div class="mouth">'+
-									'9月'+
-								'</div>'+
-							'</div>'+
-							'<div class="centBox">'+
-								'<div class="rw">'+
-									'<span class="tit">任务</span>'+
-									'<h2 class="cent">我的精华时刻</h2>'+
-								'</div>'+
-								'<div class="jj">'+
-									'<span class="tit">简介</span>'+
-									'<h2 class="cent">这一个月的时间内, 通过每晚睡前的记录, 让自己回顾了一整天的美好片段…</h2>'+
-								'</div>'+
-								'<div class="btCent">'+
-									'<div class="imgBox">'+
-										'<ul>'+
-											'<li></li>'+
-											'<li></li>'+
-											'<li></li>'+
-										'</ul>'+
-									'</div>'+
-									'<div class="numBox">'+
-										'<h2 class="numTit">参与人数</h2>'+
-										'<h2 class="num">8695</h2>'+
-									'</div>'+
-								'</div>'+
-							'</div>'+
-						'</div>';
-		$cache.tmpHtml = $(tmp);
-		$cahce.rankBox = $('#rankBox');
-		function getMouth(mouth){
+		$cache.rankBox = $('#rankBox');
+		$cache.tmpHtml = $($('#tmp1').html());
+		$cache.rankCent = $('.rankCent', $cache.rankBox);
+		$cache.resultHtml = '';
+
+		function getMouth(mouth) {
 			var mNum = mouth.split('-')[1];
 			var test = mNum.split('')[0];
 			var num;
-			if(test == 0){
+			if (test == 0) {
 				num = mNum.split('')[1];
-			}else{
+			} else {
 				num = test;
 			}
 			return num;
@@ -462,35 +484,198 @@
 		$.ajax({
 			type : "GET",
 			dataType : 'json',
-			url : "/taskhistory.ashx",
+			//url : "/taskhistory.ashx",
+			url : "./assets/json/taskhistory.json",
 			cache : false,
-			data : data,
 			success : function(data) {
+				//console.log(data);
 				if (data.result == 'success') {
 					var result = data.jsonResponse;
 					var rows = result.Rows;
 					var key;
-					for (key in row) {
+					for (key in rows) {
 						var row = rows[key];
-						console.log(rows[key]);
-						$('.mouth',$cache.tmpHtml).html(getMouth(row.taskstartdate));
-						$('.rw .cent',$cache.tmpHtml).html(row.taskname);
-						$('.jj .cent',$cache.tmpHtml).html(row.taskcontent);
-						$('.imgBox ul',$cache.tmpHtml).html(row.tasksmallimg);
-						$cahce.rankBox.append($cache.tmpHtml);
+						//console.log(rows[key]);
+						$cache.tmpHtml.attr('id', row.id);
+						$('.mouth', $cache.tmpHtml).html(getMouth(row.taskstartdate) + '月');
+						$('.rw .cent', $cache.tmpHtml).html(row.taskname);
+						$('.jj .cent', $cache.tmpHtml).html(row.taskcontent);
+						$('.imgBox ul', $cache.tmpHtml).html('<li style="background-image: url(' + row.tasksmallimg + '); background-size: 100% auto;"></li>');
+						$('.num', $cache.tmpHtml).html(row.usernum);
+						$cache.resultHtml += $cache.tmpHtml.prop("outerHTML");
 					}
+					$cache.rankCent.append($cache.resultHtml);
+					pgScroll[0].refresh();
 				} else if (data.result == 'failed') {
 					alert('服务器错误!');
 				}
 			},
 			error : function() {
-				subCodeLock = false;
-				alert('加载失败请检查您的网络!');
+				alert('加载失败,请检查您的网络!');
 			}
 		});
 	};
 	pgFun.main = function() {
+		this.pubInit();
 		this.pubScroll();
+		$cache.titBox = $('#titBox');
+		$cache.imgBox = $('#imgBox ul', $cache.tmpHtml);
+		$cache.pop = $('#pop');
+		$cache.popShare1 = $('.popShare1', $cache.pop);
+		$cache.popShare2 = $('.popShare2', $cache.pop);
+		var url = $.url();
+		var pgType = url.fparam('type');
+		var taskid = url.fparam('taskid');
+		function getusertask() {
+			if (!taskid) {
+				return false;
+			}
+			$.ajax({
+				type : "GET",
+				dataType : 'json',
+				url : "/getusertask.json",
+				cache : false,
+				success : function(data) {
+					//console.log(data);
+					if (data.result == 'success') {
+						var result = data.jsonResponse;
+						var img, imgArr = [], imgList = '';
+						for (img in result) {
+							if (img.match('img')) {
+								imgList += '<li style="background-image: url(' + row[img] + '); background-size: 100% auto;"></li>';
+							}
+						}
+						$cache.titBox.attr('id', result.id);
+						$('.name', $cache.tmpHtml).html(result.username);
+						$('.cent', $cache.tmpHtml).html(result.content);
+						$cache.imgBox.html(imgList);
+					} else if (data.result == 'failed') {
+						alert('服务器错误!');
+					}
+				},
+				error : function() {
+					alert('加载失败,请检查您的网络!');
+				}
+			});
+		};
+
+		switch(pgType) {
+			case 'init':
+				$cache.yqdz1 = $('#yqdz1');
+				$cache.yqdz1.show().on('click', '.submit', function(e) {
+					pgScroll[0].disable();
+					$cache.pop.show();
+					$cache.popShare1.show();
+					setTimeout(function() {
+						$cache.pop.hide();
+						$cache.popShare1.hide();
+						pgScroll[0].enable();
+					}, 2000);
+				});
+				pgScroll[0].refresh();
+				break;
+			case 'self':
+				$cache.yqdz2 = $('#yqdz2');
+				$cache.yqdz2.show().on('click', '.submit', function(e) {
+					pgScroll[0].disable();
+					$cache.pop.show();
+					$cache.popShare1.show();
+					setTimeout(function() {
+						$cache.pop.hide();
+						$cache.popShare1.hide();
+						pgScroll[0].enable();
+					}, 2000);
+				});
+				pgScroll[0].refresh();
+				break;
+			case 'other':
+				function unfocus() {
+					$cache.yqdz3 = $('#yqdz3');
+					$cache.yqdz3.show().on('click', '.weixin', function(e) {
+						pgScroll[0].disable();
+						$cache.pop.show();
+						$cache.popShare2.show();
+						setTimeout(function() {
+							$cache.pop.hide();
+							$cache.popShare2.hide();
+							pgScroll[0].enable();
+						}, 2000);
+					}).on('click', '.submit', function(e) {
+						window.location.href = "./index.html";
+					}).on('click', '.loveBtn', function(e) {
+						alert('请先关注,碧欧泉微信!');
+					});
+					pgScroll[0].refresh();
+				}
+
+				function focus() {
+					$cache.yqdz4 = $('#yqdz4');
+					$cache.yqdz4.show().on('click', '.submit', function(e) {
+						window.location.href = "./index.html";
+					}).on('click', '.loveBtn', function(e) {
+						var data = {
+							taskuserid : $.cookie('taskuserid')
+						};
+						$.ajax({
+							type : "POST",
+							dataType : 'json',
+							url : "/lovetask.ashx",
+							cache : false,
+							data : data,
+							success : function(data) {
+								//console.log(data);
+								if (data.result == 'success') {
+
+								} else if (data.result == 'failed') {
+									switch(data.jsonResponse) {
+										case 'have support':
+											alert('您已经支持过了!');
+											break;
+										case 'over':
+											alert('对不起,活动已过期!');
+											break;
+										default:
+											alert('服务器错误!');
+									};
+								}
+							},
+							error : function() {
+								alert('加载失败,请检查您的网络!');
+							}
+						});
+					});
+					pgScroll[0].refresh();
+				}
+
+
+				$.ajax({
+					type : "POST",
+					dataType : 'json',
+					url : "/issubscribe.ashx",
+					cache : false,
+					success : function(data) {
+						//console.log(data);
+						if (data.result == 'success') {
+							focus();
+						} else if (data.result == 'failed') {
+							switch(data.jsonResponse) {
+								case 'no subscribe':
+									unfocus();
+									alert('您已经支持过了!');
+									break;
+								default:
+									alert('服务器错误!');
+							};
+						}
+					},
+					error : function() {
+						unfocus();
+						alert('加载失败,请检查您的网络!');
+					}
+				});
+				break;
+			default:
+		};
 	};
 	global[fun] = pgFun;
 	global['pgScroll'] = pgScroll;
