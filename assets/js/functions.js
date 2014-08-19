@@ -40,7 +40,7 @@
 	window.pgLock = true;
 })();
 
-;(function(fun, global) {
+;(function(fun, scroll, global) {
 	var inface = {};
 	var pgFun = {};
 	var $cache = {};
@@ -217,16 +217,41 @@
 		$cache.taskCent = $('.topCent', $cache.centBox);
 		$cache.lqrwBtn = $('.lqrwBtn', $cache.centBox);
 		$cache.mainPic = $('.mainPic', $cache.centBox);
+		$cache.popShare2 = $('.popShare2', $cache.pop);
 		$cache.popHdxq = $('.popHdxq', $cache.pop);
 		$cache.popHdxqX = $('.popHdxqX', $cache.popHdxqX);
+		
+		var isFocus = false;
 
 		function getDate(start, end) {
 			var startdate = start.split(' ')[0].split('-').join('.');
 			var enddate = end.split(' ')[0].split('-').join('.');
 			return startdate + '-' + enddate;
-		}
-
-
+		};
+		
+		$.ajax({
+			type : "POST",
+			dataType : 'json',
+			url : "/issubscribe.ashx",
+			success : function(data) {
+				if (data.result == 'success') {
+					isFocus = true;
+				} else if (data.result == 'failed') {
+					switch(data.jsonResponse) {
+						case 'no subscribe':
+							isFocus = false;
+							break;
+						default:
+							alert('服务器错误!');
+					};
+				}
+			},
+			error : function() {
+				focus();
+				alert('加载失败,请检查您的网络!');
+			}
+		});
+		
 		$.ajax({
 			type : "GET",
 			dataType : 'json',
@@ -267,7 +292,17 @@
 											});
 										} else if (data.jsonResponse == 'no reg') {
 											//alert('请先绑定手机再进行任务!');
-											$cache.lqrwBtn.html('绑定手机').on('click', function(e) {
+											$cache.lqrwBtn.html('领取任务').on('click', function(e) {
+												if(!isFocus){
+													$cache.pop.show();
+													$cache.popShare2.show();
+													setTimeout(function() {
+														$cache.pop.hide();
+														$cache.popShare2.hide();
+														pgScroll[0].enable();
+													}, 2000);
+													return false;
+												}
 												window.location.href = './regmobile.html';
 											});
 										} else {
@@ -289,7 +324,7 @@
 							});
 							break;
 						case 'have submit':
-							$cache.lqrwBtn.html('查看任务').on('click', function() {
+							$cache.lqrwBtn.html('分享成果').on('click', function() {
 								window.location.href = './main.html#type=self&taskid='+$.cookie('taskid');
 							});
 							break;
@@ -819,7 +854,7 @@
 						$cache.tmpHtml.attr('id', row.id);
 						$('.mouth', $cache.tmpHtml).html(getMouth(row.taskstartdate) + '月');
 						$('.rw .cent', $cache.tmpHtml).html(row.taskname);
-						$('.jj .cent', $cache.tmpHtml).html(row.taskcontent);
+						$('.jj .cent', $cache.tmpHtml).html(row.taskcontent.replace(/<[^>]+>/g,""));
 						$('.imgBox ul', $cache.tmpHtml).html('<li style="background-image: url(' + row.tasksmallimg + ');"></li>');
 						$('.num', $cache.tmpHtml).html(row.usernum);
 						$cache.resultHtml += $cache.tmpHtml.prop("outerHTML");
@@ -1166,8 +1201,8 @@
 		};
 	};
 	global[fun] = pgFun;
-	global['pgScroll'] = pgScroll;
-})('fun', this);
+	global[scroll] = pgScroll;
+})('fun', 'pgScroll', this);
 
 ;(function($) {
 
