@@ -71,7 +71,7 @@
 		pathFun.full = pathFun.absolute +  pathFun.relative;
 		window['urlpath'] = pathFun;
 	}
-	pgFun.setShare = function(obj){
+	pgFun.setShare = function(){
 		/*
 		 *	开启微信菜单
 		*/
@@ -92,7 +92,7 @@
 		/*
 		* 开启微信分享
 		*/
-		window.shareData = obj;
+		
 		document.addEventListener('WeixinJSBridgeReady', function onBridgeReady() {
 			/*
 			window.shareData = {
@@ -207,7 +207,6 @@
 		}
 	};
 	pgFun.index = function() {
-
 		this.pubInit();
 		this.pubScroll();
 		$cache.yxgzBtn = $('.yxgzBtn');
@@ -299,7 +298,19 @@
 							break;
 						default:
 					}
-
+					var share = {
+						imgUrl : window.location.origin + result.tasksmallimg,
+						timeLineLink : urlpath.absolute + "index.html",
+						sendFriendLink : urlpath.absolute + "index.html",
+						weiboLink : urlpath.absolute + "index.html",
+						tTitle : result.taskname,
+						tContent : result.taskname,
+						fTitle : result.taskname,
+						fContent : result.taskname,
+						wContent : result.taskname,
+					};
+					window.shareData = share;
+					pgFun.setShare();
 				} else if (data.result == 'failed') {
 					var result = data.jsonResponse;
 					if (result == "no task") {
@@ -894,6 +905,7 @@
 						//$cache.titBox.attr('taskid', result.id);
 						$('.name', $cache.titBox).html(result.username);
 						$('.portrait', $cache.titBox).css('backgroundImage', 'url('+result.userimg+')');
+						$('.title', $cache.titBox).html(result.taskname);
 						$('.cent', $cache.titBox).html(result.content);
 						
 						$cache.imgBox.html(imgList);
@@ -912,8 +924,9 @@
 							fContent : result.taskname,
 							wContent : result.taskname,
 						};
+						window.shareData = share;
 						//console.log(share);
-						pgFun.setShare(share);
+						pgFun.setShare();
 					} else if (data.result == 'failed') {
 						alert('服务器错误!');
 					}
@@ -952,6 +965,7 @@
 						$cache.titBox.attr('taskid', result.id);
 						$('.name', $cache.titBox).html(result.username);
 						$('.portrait', $cache.titBox).css('backgroundImage', 'url('+result.userimg+')');
+						$('.title', $cache.titBox).html(result.taskname);
 						$('.cent', $cache.titBox).html(result.content);
 						$cache.imgBox.html(imgList);
 						$cache.zoomImgUl.html(imgList);
@@ -987,7 +1001,7 @@
 						var result = data.jsonResponse;
 						$('.title', $cache.titBox).html('我已经领取本月泉心任务');
 						$('.name', $cache.titBox).html(result.username);
-						$('.cent', $cache.titBox).html(result.content).css({'fontSize': '30px', 'paddingBottom': '80px'});
+						$('.cent', $cache.titBox).html(result.taskname).css({'fontSize': '30px', 'paddingBottom': '80px'});
 						$('.portrait', $cache.titBox).css('backgroundImage', 'url('+result.userimg+')');
 						pgScroll[0].refresh();
 						var share = {
@@ -1001,8 +1015,9 @@
 							fContent : result.taskname,
 							wContent : result.taskname,
 						};
-						console.log(share);
-						pgFun.setShare(share);
+						window.shareData = share;
+						//console.log(share);
+						pgFun.setShare();
 					} else if (data.result == 'failed') {
 						alert('服务器错误!');
 					}
