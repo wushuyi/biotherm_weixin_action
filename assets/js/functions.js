@@ -1,6 +1,8 @@
 ;(function() {
-	// 判断浏览器是否为微信浏览器
 	//alert(window.document.cookie);
+	//alert(window.location.href);
+
+	// 判断浏览器是否为微信浏览器
 	window.pgLock = false;
 	var url = $.url();
 	var isdebug = url.fparam('isdebug');
@@ -518,7 +520,6 @@
 		$cache.delImg = $('.del', $cache.upImg);
 		$cache.subImg = $('.subImg', $cache.upImg);
 		$cache.submit = $('.submit', $cache.upImg);
-		
 		var taskid = $.cookie('taskid');
 		var data = {
 			taskid: taskid
@@ -537,7 +538,7 @@
 					for (img in result) {
 						imgIndex += 1;
 						if (/img\d/.test(img) && result[img] != null) {
-							imgList += '<li id="img' + imgIndex + '" style="background-image: url(/' + result[img] + ');"></li>';
+							imgList += '<li id="img' + imgIndex + '" style="background-image: url(/' + result[img] + ');"><b>X</b></li>';
 							imgArr.push(result[img]);
 						}
 					}
@@ -553,70 +554,6 @@
 			}
 		});
 		
-		/*
-		 if (imgArr.length >= 9) {
-		 alert('对不起, 最多只能上传9张!');
-		 return;
-		 }
-		 */
-		/*
-		$('#upImg').dmUploader({
-			url : '/uploadtaskimg.ashx?taskid=' + taskid,
-			dataType : 'json',
-			allowedTypes : 'image/*',
-			onNewFile : function(id, file) {
-				//console.log(file);
-				var reader = new FileReader();
-				var image;
-				reader.readAsDataURL(file);
-				reader.onload = function() {
-					toBase64(reader);
-				};
-				$(this).val('');
-				function toBase64(base64) {
-					var imgsrc = base64.result;
-					//console.log(imgsrc);
-					image = new Image();
-					image.onload = function() {
-						imageLoad(image);
-					};
-					image.src = imgsrc;
-				};
-				function imageLoad(img) {
-					var imgW = img.width, imgH = img.height;
-					if (imgW > 640) {
-						var scal = 640 / imgW;
-						imgW *= scal;
-						imgH *= scal;
-					}
-					var canvas = document.createElement('canvas');
-					canvas.setAttribute('width', imgW + 'px');
-					canvas.setAttribute('height', imgH + 'px');
-					var context = canvas.getContext('2d');
-					context.drawImage(image, 0, 0, imgW, imgH);
-					context.save();
-					var imgdata = canvas.toDataURL('image/jpeg', 1);
-					var html = $('<li><b>X</b></li>').css('backgroundImage', 'url("' + imgdata + '")');
-					$cache.imgListUl.append(html);
-					pgScroll[0].refresh();
-				}
-
-			},
-			onUploadSuccess : function(id, data) {
-				if (data.result == 'success') {
-					imgArr.push(data.jsonResponse);
-				} else if (data.result == 'failed') {
-					alert('上传失败!');
-				} else {
-					alert('服务器错误!');
-				}
-				//alert(data.jsonResponse);
-			},
-			onUploadProgress : function(id, percent) {
-				//$('.cent').html(percent);
-			}
-		});
-		*/
 		$cache.subImg.on('change', function(e) {
 			if (imgArr.length >= 9) {
 				alert('对不起, 最多只能上传9张!');
@@ -684,7 +621,7 @@
 							$cache.imgListUl.append(html);
 							imgArr.push(data.jsonResponse);
 							//console.log(imgArr);
-							alert(data.jsonResponse);
+							//alert(data.jsonResponse);
 						}else if(data.result == 'failed') {
 							alert('上传失败!');
 						}else {
@@ -712,7 +649,7 @@
 				data : data,
 				success : function(data) {
 					if (data.result == 'success') {
-						alert('ok');
+						//alert('ok');
 						imgArr.taskRemove(index);
 						//console.log(thisLi);
 						thisLi.remove();
@@ -745,7 +682,7 @@
 				data : data,
 				success : function(data) {
 					if (data.result == 'success') {
-						alert("发布任务成功!");
+						//alert("发布任务成功!");
 						window.location.href = './main.html#type=init&taskid='+$.cookie('taskid');
 					} else if (data.result == 'failed') {
 						alert('服务器错误!');
@@ -783,9 +720,9 @@
 						var row = rows[key];
 						var img, imgArr = [], imgList = '';
 						for (img in row) {
-							if (img.match('img')) {
+							if (/img\d/.test(img) && row[img] != null) {
 								//imgArr.push(row[img]);
-								imgList += '<li style="background-image: url(' + row[img] + ');"></li>';
+								imgList += '<li style="background-image: url(/' + row[img] + ');"></li>';
 							}
 						}
 						//console.log(imgArr);
@@ -794,6 +731,7 @@
 						$cache.tmpHtml.attr('openid', row.openid);
 						$('.index', $cache.tmpHtml).html(row.rank);
 						$('.name', $cache.tmpHtml).html(row.username);
+						$('.portrait', $cache.tmpHtml).css('backgroundImage', 'url('+row.userimg+')');
 						$('.cent', $cache.tmpHtml).html(row.content);
 						$('.num', $cache.tmpHtml).html(row.lovenum);
 						$('.imgBox ul', $cache.tmpHtml).html(imgList);
@@ -815,6 +753,11 @@
 			error : function() {
 				alert('加载失败,请检查您的网络!');
 			}
+		});
+		$cache.rankCent.on('click', '.rankInfo', function(){
+			var $self = $(this);
+			var taskid = $self.attr('id');
+			window.location.href = "main.html#type=other&taskuserid="+taskid;
 		});
 	};
 	pgFun.taskhistory = function() {
@@ -868,6 +811,13 @@
 			error : function() {
 				alert('加载失败,请检查您的网络!');
 			}
+		});
+		
+		$cache.rankCent.on('click', '.rankInfo', function(){
+			var $self = $(this);
+			var taskid = $self.attr('id');
+			$.cookie('taskid', taskid);
+			window.location.href = "taskrank.html";
 		});
 	};
 	pgFun.main = function() {
@@ -1092,6 +1042,23 @@
 				getusertask();
 				break;
 			case 'other':
+				/*
+				*	开启微信菜单
+				*/
+				function onBridgeReady(){
+					WeixinJSBridge.call('showOptionMenu');
+				}
+				
+				if (typeof WeixinJSBridge == "undefined"){
+					if( document.addEventListener ){
+						document.addEventListener('WeixinJSBridgeReady', onBridgeReady, false);
+					}else if (document.attachEvent){
+						document.attachEvent('WeixinJSBridgeReady', onBridgeReady); 
+						document.attachEvent('onWeixinJSBridgeReady', onBridgeReady);
+					}
+				}else{
+					onBridgeReady();
+				}
 				function unfocus() {
 					$cache.yqdz3 = $('#yqdz3');
 					$cache.yqdz3.show().on('click', '.weixin', function(e) {
@@ -1159,6 +1126,7 @@
 					url : "/issubscribe.ashx",
 					success : function(data) {
 						//console.log(data);
+						//alert(data.result);
 						if (data.result == 'success') {
 							focus();
 						} else if (data.result == 'failed') {
