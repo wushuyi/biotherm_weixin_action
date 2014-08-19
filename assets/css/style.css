@@ -272,6 +272,7 @@ a.block {
   border: 2px solid #FFFFFF;
   background-size: 100% auto;
   background-position: 50% 50%;
+  background-color: #258FB6;
 }
 #main #titBox .name {
   display: block;
@@ -634,6 +635,56 @@ a.block {
   background-image: url('../image/icon_6.png');
   background-repeat: no-repeat;
   background-position: 530px 24px;
+}
+#main #yqdz5 {
+  display: none;
+  height: 380px;
+  width: 100%;
+  margin-top: 30px;
+  font-size: 30px;
+  color: #FFFFFF;
+  position: relative;
+}
+#main #yqdz5 .tit {
+  height: 62px;
+  line-height: 34px;
+  text-align: center;
+}
+#main #yqdz5 .weixin {
+  width: 570px;
+  height: 74px;
+  border: none;
+  color: #FFFFFF;
+  font-size: 32px;
+  background-color: #258FB7;
+  border-radius: 8px;
+  position: absolute;
+  padding-left: 20px;
+  top: 80px;
+  left: 50%;
+  margin-left: -285px;
+  outline: none;
+  background-image: url('../image/icon_17.png');
+  background-repeat: no-repeat;
+  background-position: 120px 8px;
+}
+#main #yqdz5 .submit {
+  width: 570px;
+  height: 74px;
+  border: none;
+  color: #FFFFFF;
+  font-size: 32px;
+  background-color: #FFA400;
+  border-radius: 8px;
+  position: absolute;
+  padding-left: 0px;
+  top: 200px;
+  left: 50%;
+  margin-left: -285px;
+  outline: none;
+  background-image: url('../image/icon_6.png');
+  background-repeat: no-repeat;
+  background-position: 360px 24px;
 }
 #taskhistory .nav {
   width: 100%;

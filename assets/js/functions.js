@@ -1,5 +1,6 @@
 ;(function() {
 	// 判断浏览器是否为微信浏览器
+	//alert(window.document.cookie);
 	window.pgLock = false;
 	var url = $.url();
 	var isdebug = url.fparam('isdebug');
@@ -29,13 +30,13 @@
 			//alert('请在微信浏览器中打开!');
 			//window.location.href = 'http://m.biotherm.com.cn/';
 		} else if (!have_openid) {
-
 			window.location.href = '/Handler.ashx';
 		} else {
 			window.pgLock = true;
+			
 		}
 	}
-
+	
 	window.pgLock = true;
 })();
 
@@ -44,7 +45,105 @@
 	var pgFun = {};
 	var $cache = {};
 	var pgScroll = [];
+	pgFun.getPath = function(){
+		var pathFun = {
+			full: null,
+			absolute: (function() {
+				var arry = window.location.href.split('/');
+				var len = arry.length - 1;
+				var path = '';
+				for (var i = 0; i < len; i++) {
+					path += arry[i] + "/";
+				}
+				return path;
+			})(),
+			relative: (function() {
+				var re = new RegExp('functions(\.min)?\.js.*'),
+				scripts = document.getElementsByTagName('script');
+				for (var i = 0, ii = scripts.length; i < ii; i++) {
+					var path = scripts[i].getAttribute('src');
+					if (re.test(path)){
+						return path.replace(re, '');
+					}
+				}
+			})()
+		};
+		pathFun.full = pathFun.absolute +  pathFun.relative;
+		window['urlpath'] = pathFun;
+	}
+	pgFun.setShare = function(obj){
+		/*
+		 *	开启微信菜单
+		*/
+		function onBridgeReady(){
+			WeixinJSBridge.call('showOptionMenu');
+		}
+		
+		if (typeof WeixinJSBridge == "undefined"){
+			if( document.addEventListener ){
+				document.addEventListener('WeixinJSBridgeReady', onBridgeReady, false);
+			}else if (document.attachEvent){
+				document.attachEvent('WeixinJSBridgeReady', onBridgeReady); 
+				document.attachEvent('onWeixinJSBridgeReady', onBridgeReady);
+			}
+		}else{
+			onBridgeReady();
+		}
+		/*
+		* 开启微信分享
+		*/
+		window.shareData = obj;
+		document.addEventListener('WeixinJSBridgeReady', function onBridgeReady() {
+			/*
+			window.shareData = {
+				"imgUrl" : urlpath.full + "../image/share/weixin.jpg",
+				"timeLineLink" : urlpath.absolute + "hdxq.html",
+				"sendFriendLink" : urlpath.absolute + "hdxq.html",
+				"weiboLink" : urlpath.absolute + "hdxq.html",
+				"tTitle" : "碧欧泉七夕礼遇，给TA一场非同寻常的告白！",
+				"tContent" : "碧欧泉告诉你，爱要大声说出来，立刻对TA说出你的七夕泉心密语！",
+				"fTitle" : "碧欧泉七夕礼遇，给TA一场非同寻常的告白！",
+				"fContent" : "碧欧泉告诉你，爱要大声说出来，立刻对TA说出你的七夕泉心密语！",
+				"wContent" : "碧欧泉告诉你，爱要大声说出来，立刻对TA说出你的七夕泉心密语！"
+			};
+			*/
+			// 发送给好友
+			WeixinJSBridge.on('menu:share:appmessage', function(argv) {
+				WeixinJSBridge.invoke('sendAppMessage', {
+					"img_url" : window.shareData.imgUrl,
+					"link" : window.shareData.sendFriendLink,
+					"desc" : window.shareData.fContent,
+					"title" : window.shareData.fTitle
+				}, function(res) {
+					_report('send_msg', res.err_msg);
+				})
+			});
+			// 分享到朋友圈
+			WeixinJSBridge.on('menu:share:timeline', function(argv) {
+				WeixinJSBridge.invoke('shareTimeline', {
+					"img_url" : window.shareData.imgUrl,
+					"img_width" : "640",
+					"img_height" : "640",
+					"link" : window.shareData.timeLineLink,
+					"desc" : window.shareData.tContent,
+					"title" : window.shareData.tTitle
+				}, function(res) {
+					_report('timeline', res.err_msg);
+				});
+			});
+			// 分享到微博
+			WeixinJSBridge.on('menu:share:weibo', function(argv) {
+				WeixinJSBridge.invoke('shareWeibo', {
+					"content" : window.shareData.wContent,
+					"url" : window.shareData.weiboLink,
+				}, function(res) {
+					_report('weibo', res.err_msg);
+				});
+			});
+		}, false);
+	};
 	pgFun.pubInit = function() {
+		this.getPath();
 		/*
 		 * 输入框 提示信息 兼容性处理  by 巫书轶
 		 * 用法  tipmsg="str" css : noTip
@@ -71,10 +170,27 @@
 				});
 			}
 		});
+		/*
+		 *	隐藏微信菜单
+		*/
+		function onBridgeReady(){
+			WeixinJSBridge.call('hideOptionMenu');
+		}
+		
+		if (typeof WeixinJSBridge == "undefined"){
+			if( document.addEventListener ){
+				document.addEventListener('WeixinJSBridgeReady', onBridgeReady, false);
+			}else if (document.attachEvent){
+				document.attachEvent('WeixinJSBridgeReady', onBridgeReady); 
+				document.attachEvent('onWeixinJSBridgeReady', onBridgeReady);
+			}
+		}else{
+			onBridgeReady();
+		}
 	};
 	pgFun.pubScroll = function(obj) {
 		$cache.mainPg = $('.wrapper');
-		if (!obj) {
+		if (obj == false) {
 			pgScroll[0] = new IScroll($cache.mainPg.get(0), {
 				click : false,
 				preventDefaultException : {
@@ -120,7 +236,7 @@
 			success : function(data) {
 				if (data.result == 'success') {
 					var result = data.jsonResponse;
-					console.log(result);
+					//console.log(result);
 					var taskDate = getDate(result.taskstartdate, result.taskdate);
 					$cache.taskName.html(result.taskname);
 					$cache.taskDate.html(taskDate);
@@ -129,44 +245,43 @@
 					$.cookie('taskid', result.id);
 					switch(result.state) {
 						case 'no get':
-							var lqrwBtnLock = false;
-							$cache.lqrwBtn.html('领取任务').on('click', function(e) {
-								if (lqrwBtnLock) {
-									return false;
-								}
-								lqrwBtnLock = true;
-								var data = {
-									taskid : $.cookie('taskid')
-								};
-								$.ajax({
-									type : "POST",
-									dataType : 'json',
-									data : data,
-									url : "/gettask.ashx",
-									cache : false,
-									success : function(data) {
-										lqrwBtnLock = false;
-										if (data.result == 'success') {
-											alert('任务领取成功!');
-											window.location.reload();
-										} else if (data.result == 'failed') {
-											if (data.jsonResponse == 'have get') {
-												alert('您已经领取过该任务!');
-											} else if (data.jsonResponse == 'no reg') {
-												alert('请先绑定手机再进行任务!');
+							var data = {
+								taskid : $.cookie('taskid')
+							};
+							$.ajax({
+								type : "POST",
+								dataType : 'json',
+								data : data,
+								url : "/gettask.ashx",
+								success : function(data) {
+									lqrwBtnLock = false;
+									if (data.result == 'success') {
+										//alert('任务领取成功!');
+										$cache.lqrwBtn.html('领取任务').on('click', function(e) {
+											window.location.href = './main.html#type=share';
+										});
+									} else if (data.result == 'failed') {
+										if (data.jsonResponse == 'have get') {
+											//alert('您已经领取过该任务!');
+											$cache.lqrwBtn.html('继续任务').on('click', function(e) {
+												window.location.href = './upload.html';
+											});
+										} else if (data.jsonResponse == 'no reg') {
+											//alert('请先绑定手机再进行任务!');
+											$cache.lqrwBtn.html('绑定手机').on('click', function(e) {
 												window.location.href = './regmobile.html';
-											} else {
-												alert('未知参数: ' + data.jsonResponse);
-											}
+											});
 										} else {
-											alert('服务器错误!');
+											alert('未知参数: ' + data.jsonResponse);
 										}
-									},
-									error : function() {
-										lqrwBtnLock = false;
-										alert('加载失败,请检查您的网络!');
+									} else {
+										alert('服务器错误!');
 									}
-								});
+								},
+								error : function() {
+									lqrwBtnLock = false;
+									alert('加载失败,请检查您的网络!');
+								}
 							});
 							break;
 						case 'no submit':
@@ -176,7 +291,7 @@
 							break;
 						case 'have submit':
 							$cache.lqrwBtn.html('查看任务').on('click', function() {
-								window.location.href = './main.html';
+								window.location.href = './main.html#type=self&taskid='+$.cookie('taskid');
 							});
 							break;
 						case 'over':
@@ -256,13 +371,12 @@
 				type : "POST",
 				dataType : 'json',
 				url : "/bindinggettask.ashx",
-				cache : false,
 				data : data,
 				success : function(data) {
 					subAllLock = false;
 					if (data.result == 'success') {
 						alert('绑定成功!');
-						window.location.href = './index.html';
+						window.location.href = 'main.html#type=share';
 					} else if (data.result == 'failed') {
 						switch(data.jsonResponse) {
 							case 'error code':
@@ -308,7 +422,6 @@
 				type : "POST",
 				dataType : 'json',
 				url : "/sendmsg.ashx",
-				cache : false,
 				data : data,
 				success : function(data) {
 					if (data.result == 'success') {
@@ -339,7 +452,7 @@
 		this.pubScroll(false);
 		var imgArr = [];
 		
-		 Array.prototype.remove = function(dx) {
+		 Array.prototype.taskRemove = function(dx) {
 		 　		if(isNaN(dx)||dx>this.length){return false;}
 		 　　		for(var i=0,n=0;i<this.length;i++)
 		 　		　{
@@ -359,16 +472,48 @@
 		$cache.delImg = $('.del', $cache.upImg);
 		$cache.subImg = $('.subImg', $cache.upImg);
 		$cache.submit = $('.submit', $cache.upImg);
-
+		
 		var taskid = $.cookie('taskid');
-
+		var data = {
+			taskid: taskid
+		};
+		$.ajax({
+			type : "POST",
+			dataType : 'json',
+			url : "/getusertask.ashx",
+			cache : false,
+			data : data,
+			success : function(data) {
+				//console.log(data);
+				if (data.result == 'success') {
+					var result = data.jsonResponse;
+					var img, imgIndex = 0, imgList = '';
+					for (img in result) {
+						imgIndex += 1;
+						if (/img\d/.test(img) && result[img] != null) {
+							imgList += '<li id="img' + imgIndex + '" style="background-image: url(/' + result[img] + ');"></li>';
+							imgArr.push(result[img]);
+						}
+					}
+					$('.cent', $cache.titBox).html(result.content);
+					$cache.imgListUl.html(imgList);
+					pgScroll[0].refresh();
+				} else if (data.result == 'failed') {
+					alert('服务器错误!');
+				}
+			},
+			error : function() {
+				alert('加载失败,请检查您的网络!');
+			}
+		});
+		
 		/*
 		 if (imgArr.length >= 9) {
 		 alert('对不起, 最多只能上传9张!');
 		 return;
 		 }
 		 */
-
+		/*
 		$('#upImg').dmUploader({
 			url : '/uploadtaskimg.ashx?taskid=' + taskid,
 			dataType : 'json',
@@ -425,22 +570,110 @@
 				//$('.cent').html(percent);
 			}
 		});
+		*/
+		$cache.subImg.on('change', function(e) {
+			if (imgArr.length >= 9) {
+				alert('对不起, 最多只能上传9张!');
+				return;
+			}
+			var file = e.target.files[0];
+			var reader = new FileReader();
+			var image;
+			reader.readAsDataURL(file);
+			reader.onload = function() {
+				toBase64(reader);
+			};
+			$(this).val('');
+			function toBase64(base64) {
+				var imgsrc = base64.result;
+				//console.log(imgsrc);
+				image = new Image();
+				image.onload = function() {
+					imageLoad(image);
+				};
+				image.src = imgsrc;
+			};
+			function imageLoad(img) {
+				var imgW = img.width, imgH = img.height;
+				if (imgW > 640) {
+					var scal = 640 / imgW;
+					imgW *= scal;
+					imgH *= scal;
+				}
+				var canvas = document.createElement('canvas');
+				canvas.setAttribute('width', imgW + 'px');
+				canvas.setAttribute('height', imgH + 'px');
+				var context = canvas.getContext('2d');
+				context.drawImage(image, 0, 0, imgW, imgH);
+				context.save();
+				var imgdata = canvas.toDataURL('image/png', 1);
+				var html = $('<li><b>X</b></li>').css('backgroundImage', 'url("' + imgdata + '")');
+				var data = {
+					imgstr : imgdata,
+					taskid : taskid
+				};
+				$.ajax({
+					type : 'POST',
+					url : "/uploadtaskimgBase.ashx",
+					dataType : 'json',
+					data : data,
+					xhr : function() {
+						var xhrobj = $.ajaxSettings.xhr();
+						if (xhrobj.upload) {
+							xhrobj.upload.addEventListener('progress', function(event) {
+								var percent = 0;
+								var position = event.loaded || event.position;
+								var total = event.total || e.totalSize;
+								if (event.lengthComputable) {
+									percent = Math.ceil(position / total * 100);
+								}
+								//$('.cent').html(percent);
+							}, false);
+						}
+						return xhrobj;
+					},
+					success : function(data) {
+						//console.log(data);
+						if (data.result == 'success') {
+							$cache.imgListUl.append(html);
+							imgArr.push(data.jsonResponse);
+							//console.log(imgArr);
+							alert(data.jsonResponse);
+						}else if(data.result == 'failed') {
+							alert('上传失败!');
+						}else {
+							alert('服务器错误!');
+						}
+					},
+					error : function() {
+						alert('上传失败,请检查您的网络!');
+					}
+				});
+			};
+		});
 		$cache.imgList.on('click', 'b', function(e) {
-			var li = $(this).parent('li');
-			var index = li.index();
+			var thisLi = $(this).parent('li');
+			var index = thisLi.index();
 			var data = {
 				taskid : taskid,
-				imgurl : imgArr[index]
+				imgurl : imgArr[index] 
 			};
+			console.log(data);
 			$.ajax({
 				type : "POST",
-				url : "/deltaskimg.ashx?taskid=" + taskid,
+				url : "/deltaskimg.ashx",
+				dataType : 'json',
 				data : data,
 				success : function(data) {
 					if (data.result == 'success') {
-						imgArr.remove(index);
-						li.remove();
+						alert('ok');
+						imgArr.taskRemove(index);
+						//console.log(thisLi);
+						thisLi.remove();
+						//console.log(imgArr);
 					} else if (data.result == 'failed') {
+						alert('删除失败!');
+					} else {
 						alert('服务器错误!');
 					}
 				},
@@ -462,11 +695,12 @@
 			$.ajax({
 				type : "POST",
 				url : "/tasksubmit.ashx",
+				dataType : 'json',
 				data : data,
 				success : function(data) {
 					if (data.result == 'success') {
 						alert("发布任务成功!");
-						window.location.href = './main.html#type=init';
+						window.location.href = './main.html#type=init&taskid='+$.cookie('taskid');
 					} else if (data.result == 'failed') {
 						alert('服务器错误!');
 					}
@@ -484,12 +718,15 @@
 		$cache.tmpHtml = $($('#tmp1').html());
 		$cache.rankCent = $('.rankCent', $cache.rankBox);
 		$cache.resultHtml = '';
+		var data = {
+			Taskid : $.cookie('taskid')
+		};
 		$.ajax({
-			type : "GET",
+			type : "POST",
 			dataType : 'json',
-			//url : "/taskrank.ashx",
-			url : "./assets/json/taskrank.js",
-			cache : false,
+			url : "/taskrank.ashx",
+			//url : "./assets/json/taskrank.js",
+			data : data,
 			success : function(data) {
 				//console.log(data);
 				if (data.result == 'success') {
@@ -502,7 +739,7 @@
 						for (img in row) {
 							if (img.match('img')) {
 								//imgArr.push(row[img]);
-								imgList += '<li style="background-image: url(' + row[img] + '); background-size: 100% auto;"></li>';
+								imgList += '<li style="background-image: url(' + row[img] + ');"></li>';
 							}
 						}
 						//console.log(imgArr);
@@ -519,7 +756,14 @@
 					$cache.rankCent.append($cache.resultHtml);
 					pgScroll[0].refresh();
 				} else if (data.result == 'failed') {
-					alert('服务器错误!');
+					var result = data.jsonResponse;
+					if(result == "no data"){
+						alert("排名未开始!");
+						window.location.href = "./index.html";
+					}else{
+						alert('服务器错误!');
+					}
+						
 				}
 			},
 			error : function() {
@@ -549,8 +793,8 @@
 		$.ajax({
 			type : "GET",
 			dataType : 'json',
-			//url : "/taskhistory.ashx",
-			url : "./assets/json/taskhistory.js",
+			url : "/taskhistory.ashx",
+			//url : "./assets/json/taskhistory.js",
 			cache : false,
 			success : function(data) {
 				//console.log(data);
@@ -565,7 +809,7 @@
 						$('.mouth', $cache.tmpHtml).html(getMouth(row.taskstartdate) + '月');
 						$('.rw .cent', $cache.tmpHtml).html(row.taskname);
 						$('.jj .cent', $cache.tmpHtml).html(row.taskcontent);
-						$('.imgBox ul', $cache.tmpHtml).html('<li style="background-image: url(' + row.tasksmallimg + '); background-size: 100% auto;"></li>');
+						$('.imgBox ul', $cache.tmpHtml).html('<li style="background-image: url(' + row.tasksmallimg + ');"></li>');
 						$('.num', $cache.tmpHtml).html(row.usernum);
 						$cache.resultHtml += $cache.tmpHtml.prop("outerHTML");
 					}
@@ -592,42 +836,49 @@
 		$cache.zoomImg = $('#zoomImg');
 		$cache.imgBoxX = $('.imgBoxX', '#zoomImg');
 		$cache.zoomImgUl = $('ul', $cache.zoomImg);
-		$cache.zoomImgLi = $('li', $cache.zoomImgUl);
-		$cache.zoomImgUl.width($cache.zoomImgLi.size() * 640);
-		pgScroll[1] = new IScroll($cache.zoomImg.get(0), {
-			scrollX : true,
-			scrollY : false,
-			click : true,
-			momentum : false,
-			snap : true,
-			snapSeed : 400,
-			keyBindings : true
-		});
-		console.log($cache.imgBoxLi);
-		$cache.imgBox.on('click', 'li', function(e) {
-			pgScroll[0].disable();
-			var $self = $(this);
-			var index = $self.index();
-			$cache.zoomImg.show();
-			pgScroll[1].refresh();
-			pgScroll[1].scrollToElement($('li', $cache.zoomImgUl).eq(index).get(0), 0);
-		});
-		$cache.imgBoxX.on('click', function(e) {
-			pgScroll[0].enable();
-			$cache.zoomImg.hide();
-		});
 		var url = $.url();
 		var pgType = url.fparam('type');
-		var taskid = url.fparam('taskid');
+		
+		function zoomImg(){
+			$cache.zoomImgLi = $('li', $cache.zoomImgUl);
+			$cache.zoomImgUl.width($cache.zoomImgLi.size() * 640);
+			pgScroll[1] = new IScroll($cache.zoomImg.get(0), {
+				scrollX : true,
+				scrollY : false,
+				click : true,
+				momentum : false,
+				snap : true,
+				snapSeed : 400,
+				keyBindings : true
+			});
+			//console.log($cache.imgBoxLi);
+			$cache.imgBox.on('click', 'li', function(e) {
+				pgScroll[0].disable();
+				var $self = $(this);
+				var index = $self.index();
+				$cache.zoomImg.show();
+				pgScroll[1].refresh();
+				pgScroll[1].scrollToElement($('li', $cache.zoomImgUl).eq(index).get(0), 0);
+			});
+			$cache.imgBoxX.on('click', function(e) {
+				pgScroll[0].enable();
+				$cache.zoomImg.hide();
+			});
+		};
 		function getusertask() {
+			var taskid = url.fparam('taskid');
 			if (!taskid) {
 				return false;
 			}
+			var data = {
+				taskid: taskid
+			};
 			$.ajax({
-				type : "GET",
+				type : "POST",
 				dataType : 'json',
-				url : "/getusertask.js",
+				url : "/getusertask.ashx",
 				cache : false,
+				data : data,
 				success : function(data) {
 					//console.log(data);
 					if (data.result == 'success') {
@@ -635,14 +886,34 @@
 						var img, imgIndex = 0, imgList = '';
 						for (img in result) {
 							imgIndex += 1;
-							if (img.match('img')) {
-								imgList += '<li id="img' + imgIndex + '" style="background-image: url(' + row[img] + '); background-size: 100% auto;"></li>';
+							if (/img\d/.test(img) && result[img] != null) {
+								imgList += '<li id="img' + imgIndex + '" style="background-image: url(/' + result[img] + ');"></li>';
 							}
 						}
-						$cache.titBox.attr('id', result.id);
-						$('.name', $cache.tmpHtml).html(result.username);
-						$('.cent', $cache.tmpHtml).html(result.content);
+						$.cookie('taskShareId', result.id);
+						//$cache.titBox.attr('taskid', result.id);
+						$('.name', $cache.titBox).html(result.username);
+						$('.portrait', $cache.titBox).css('backgroundImage', 'url('+result.userimg+')');
+						$('.cent', $cache.titBox).html(result.content);
+						
 						$cache.imgBox.html(imgList);
+						$cache.zoomImgUl.html(imgList);
+						zoomImg();
+						pgScroll[0].refresh();
+						var taskuserid = $.cookie('taskShareId');
+						var share = {
+							imgUrl : window.location.origin + result.tasksmallimg,
+							timeLineLink : urlpath.absolute + "main.html#type=other&taskuserid="+taskuserid,
+							sendFriendLink : urlpath.absolute + "main.html#type=other&taskuserid="+taskuserid,
+							weiboLink : urlpath.absolute + "main.html#type=other&taskuserid="+taskuserid,
+							tTitle : result.taskname,
+							tContent : result.taskname,
+							fTitle : result.taskname,
+							fContent : result.taskname,
+							wContent : result.taskname,
+						};
+						//console.log(share);
+						pgFun.setShare(share);
 					} else if (data.result == 'failed') {
 						alert('服务器错误!');
 					}
@@ -654,9 +925,93 @@
 		};
 		
 		function getusertaskfriend(){
-			
+			var taskuserid = url.fparam('taskuserid');
+			if (!taskuserid) {
+				return false;
+			}
+			var data = {
+				taskuserid: taskuserid
+			};
+			console.log(data);
+			$.ajax({
+				type : "POST",
+				dataType : 'json',
+				url : "/getusertaskfriend.ashx",
+				data : data,
+				success : function(data) {
+					//console.log(data);
+					if (data.result == 'success') {
+						var result = data.jsonResponse;
+						var img, imgIndex = 0, imgList = '';
+						for (img in result) {
+							imgIndex += 1;
+							if (/img\d/.test(img) && result[img] != null) {
+								imgList += '<li id="img' + imgIndex + '" style="background-image: url(/' + result[img] + ');"></li>';
+							}
+						}
+						$cache.titBox.attr('taskid', result.id);
+						$('.name', $cache.titBox).html(result.username);
+						$('.portrait', $cache.titBox).css('backgroundImage', 'url('+result.userimg+')');
+						$('.cent', $cache.titBox).html(result.content);
+						$cache.imgBox.html(imgList);
+						$cache.zoomImgUl.html(imgList);
+						zoomImg();
+						pgScroll[0].refresh();
+					} else if (data.result == 'failed') {
+						alert('服务器错误!');
+					}
+				},
+				error : function() {
+					alert('加载失败,请检查您的网络!');
+				}
+			});
 		};
 
+		function sharetask(){
+			var taskid = $.cookie('taskid');
+			if(!taskid){
+				window.location.href('./index.html');
+			}
+			var data = {
+				taskid: taskid
+			};
+			$.ajax({
+				type : "POST",
+				dataType : 'json',
+				url : "/getusertask.ashx",
+				cache : false,
+				data : data,
+				success : function(data) {
+					//console.log(data);
+					if (data.result == 'success') {
+						var result = data.jsonResponse;
+						$('.title', $cache.titBox).html('我已经领取本月泉心任务');
+						$('.name', $cache.titBox).html(result.username);
+						$('.cent', $cache.titBox).html(result.content).css({'fontSize': '30px', 'paddingBottom': '80px'});
+						$('.portrait', $cache.titBox).css('backgroundImage', 'url('+result.userimg+')');
+						pgScroll[0].refresh();
+						var share = {
+							imgUrl : window.location.origin + result.tasksmallimg,
+							timeLineLink : urlpath.absolute + "index.html",
+							sendFriendLink : urlpath.absolute + "index.html",
+							weiboLink : urlpath.absolute + "index.html",
+							tTitle : result.taskname,
+							tContent : result.taskname,
+							fTitle : result.taskname,
+							fContent : result.taskname,
+							wContent : result.taskname,
+						};
+						console.log(share);
+						pgFun.setShare(share);
+					} else if (data.result == 'failed') {
+						alert('服务器错误!');
+					}
+				},
+				error : function() {
+					alert('加载失败,请检查您的网络!');
+				}
+			});
+		};
 		switch(pgType) {
 			case 'init':
 				$cache.yqdz1 = $('#yqdz1');
@@ -670,7 +1025,7 @@
 						pgScroll[0].enable();
 					}, 2000);
 				});
-				pgScroll[0].refresh();
+				getusertask();
 				break;
 			case 'self':
 				$cache.yqdz2 = $('#yqdz2');
@@ -684,7 +1039,7 @@
 						pgScroll[0].enable();
 					}, 2000);
 				});
-				pgScroll[0].refresh();
+				getusertask();
 				break;
 			case 'other':
 				function unfocus() {
@@ -703,7 +1058,7 @@
 					}).on('click', '.loveBtn', function(e) {
 						alert('请先关注,碧欧泉微信!');
 					});
-					pgScroll[0].refresh();
+					getusertaskfriend();
 				}
 
 				function focus() {
@@ -711,23 +1066,26 @@
 					$cache.yqdz4.show().on('click', '.submit', function(e) {
 						window.location.href = "./index.html";
 					}).on('click', '.loveBtn', function(e) {
+						var taskuserid = url.fparam('taskuserid');
 						var data = {
-							taskuserid : $.cookie('taskuserid')
+							taskuserid: taskuserid
 						};
 						$.ajax({
 							type : "POST",
 							dataType : 'json',
 							url : "/lovetask.ashx",
-							cache : false,
 							data : data,
 							success : function(data) {
 								//console.log(data);
 								if (data.result == 'success') {
-
+									alert('点赞成功!, 感谢您的支持!');
 								} else if (data.result == 'failed') {
 									switch(data.jsonResponse) {
 										case 'have support':
 											alert('您已经支持过了!');
+											break;
+										case 'you cant':
+											alert('您不能为自己点赞!');
 											break;
 										case 'over':
 											alert('对不起,活动已过期!');
@@ -742,15 +1100,13 @@
 							}
 						});
 					});
-					pgScroll[0].refresh();
+					getusertaskfriend();
 				}
-
 
 				$.ajax({
 					type : "POST",
 					dataType : 'json',
 					url : "/issubscribe.ashx",
-					cache : false,
 					success : function(data) {
 						//console.log(data);
 						if (data.result == 'success') {
@@ -759,7 +1115,6 @@
 							switch(data.jsonResponse) {
 								case 'no subscribe':
 									unfocus();
-									alert('您已经支持过了!');
 									break;
 								default:
 									alert('服务器错误!');
@@ -767,10 +1122,30 @@
 						}
 					},
 					error : function() {
-						unfocus();
+						focus();
 						alert('加载失败,请检查您的网络!');
 					}
 				});
+				break;
+			case 'share':
+				
+				$cache.yqdz5 = $('#yqdz5');
+				$cache.yqdz5.css({
+					'display': 'block',
+					'marginTop' : '0'
+				}).on('click', '.weixin', function(e) {
+					pgScroll[0].disable();
+					$cache.pop.show();
+					$cache.popShare1.show();
+					setTimeout(function() {
+						$cache.pop.hide();
+						$cache.popShare1.hide();
+						pgScroll[0].enable();
+					}, 2000);
+				}).on('click', '.submit', function(e){
+					window.location.href = "index.html";
+				});
+				sharetask();
 				break;
 			default:
 		};
