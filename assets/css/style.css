@@ -270,6 +270,7 @@ a.block {
   border-radius: 65px;
   border: 2px solid #FFFFFF;
   background-size: 100% auto;
+  background-image: url('../image/no_img.jpg');
   background-position: 50% 50%;
   background-color: #258FB6;
 }
@@ -353,7 +354,7 @@ a.block {
   border-radius: 4px;
   border: 2px solid #7ED1F0;
   background-color: #FFFFFF;
-  background-size: contain;
+  background-size: cover;
   background-position: 50% 50%;
   background-repeat: no-repeat;
 }
@@ -418,6 +419,24 @@ a.block {
   background-repeat: no-repeat;
   background-position: 130px 14px, 530px 24px;
 }
+#main #yqdz1 .goback {
+  width: 570px;
+  height: 74px;
+  border: none;
+  color: #FFFFFF;
+  font-size: 32px;
+  background-color: #FFA400;
+  border-radius: 8px;
+  position: absolute;
+  padding-left: 40px;
+  top: 380px;
+  left: 50%;
+  margin-left: -285px;
+  outline: none;
+  background-image: url('../image/icon_6.png');
+  background-repeat: no-repeat;
+  background-position: 530px 24px;
+}
 #main #yqdz2 {
   display: none;
   height: 380px;
@@ -446,9 +465,21 @@ a.block {
   left: 50%;
   top: 90px;
   margin-left: -80px;
-  background-image: url('../image/icon_15.png');
-  background-repeat: no-repeat;
-  cursor: pointer;
+  /*
+			background-image: url('../image/icon_15.png');
+			background-repeat: no-repeat;
+			cursor: pointer;
+			*/
+}
+#main #yqdz2 .numBox:before {
+  content: '';
+  position: absolute;
+  display: block;
+  height: 100%;
+  width: 100%;
+  background-color: #FFFFFF;
+  opacity: 0.3;
+  border-radius: 50%;
 }
 #main #yqdz2 .numBox:after {
   content: '';
@@ -487,6 +518,24 @@ a.block {
   background-image: url('../image/icon_14.png'), url('../image/icon_6.png');
   background-repeat: no-repeat;
   background-position: 130px 14px, 530px 24px;
+}
+#main #yqdz2 .goback {
+  width: 570px;
+  height: 74px;
+  border: none;
+  color: #FFFFFF;
+  font-size: 32px;
+  background-color: #FFA400;
+  border-radius: 8px;
+  position: absolute;
+  padding-left: 40px;
+  top: 380px;
+  left: 50%;
+  margin-left: -285px;
+  outline: none;
+  background-image: url('../image/icon_6.png');
+  background-repeat: no-repeat;
+  background-position: 530px 24px;
 }
 #main #yqdz3 {
   display: none;
@@ -1223,7 +1272,7 @@ a.block {
   border: 4px solid #7ED1F0;
   border-radius: 8px;
   background-position: 50% 50%;
-  background-size: 110% auto;
+  background-size: cover;
   background-repeat: no-repeat;
   background-color: #258FB6;
   position: relative;
@@ -1363,6 +1412,7 @@ a.block {
   background-size: 100% auto;
   background-position: 50% 50%;
   background-repeat: no-repeat;
+  background-image: url('../image/no_img.jpg');
   border-radius: 50px;
   border: 4px solid #FFFFFF;
   background-color: #258FB6;
@@ -1491,7 +1541,7 @@ a.block {
   border-radius: 4px;
   border: 2px solid #7ED1F0;
   background-color: #FFFFFF;
-  background-size: 100% auto;
+  background-size: cover;
   background-position: 50% 50%;
   background-repeat: no-repeat;
 }

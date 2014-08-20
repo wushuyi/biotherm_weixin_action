@@ -29,7 +29,7 @@
 		}
 	} else {
 		if (!is_weixin) {
-			//alert('请在微信浏览器中打开!');
+			//alert('请在微信浏览器中打开活动网页!');
 			//window.location.href = 'http://m.biotherm.com.cn/';
 		} else if (!have_openid) {
 			window.location.href = '../Handler.ashx';
@@ -273,14 +273,14 @@
 							var lqrwBtnLock = false;
 							$cache.lqrwBtn.html('领取任务').on('click', function(e) {
 								if(!isFocus){
-									//alert('请先关注碧欧泉!');
+									//alert('请先关注碧欧泉官方公众账号!');
 									$cache.pop.show();
 									$cache.popShare2.show();
 									setTimeout(function() {
 										$cache.pop.hide();
 										$cache.popShare2.hide();
 										pgScroll[0].enable();
-									}, 2000);
+									}, 5000);
 									return false;
 								}
 								if(lqrwBtnLock){
@@ -340,9 +340,9 @@
 						timeLineLink : urlpath.absolute + "index.html",
 						sendFriendLink : urlpath.absolute + "index.html",
 						weiboLink : urlpath.absolute + "index.html",
-						tTitle : result.taskname,
+						tTitle : result.taskdesp,
 						tContent : result.taskdesp,
-						fTitle : result.taskname,
+						fTitle : result.taskdesp,
 						fContent : result.taskdesp,
 						wContent : result.taskdesp,
 					};
@@ -497,6 +497,11 @@
 		});
 	};
 	pgFun.upload = function() {
+		/*
+		if(document.referrer.indexOf('index.html') == -1){
+			window.location.href = './index.html';
+		}
+		*/
 		this.pubInit();
 		this.pubScroll(false);
 		var imgArr = [];
@@ -517,10 +522,11 @@
 		$cache.textCent = $('#upload .cent');
 		$cache.imgList = $('.imgList', $cache.upImg);
 		$cache.imgListUl = $('ul', $cache.imgList);
-		$cache.addImg = $('.add', $cache.upImg);
+		//$cache.addImg = $('.add', $cache.upImg);
 		$cache.delImg = $('.del', $cache.upImg);
 		$cache.subImg = $('.subImg', $cache.upImg);
 		$cache.submit = $('.submit', $cache.upImg);
+		var submitLock = false;
 		var taskid = $.cookie('taskid');
 		var data = {
 			taskid: taskid
@@ -534,11 +540,15 @@
 				//console.log(data);
 				if (data.result == 'success') {
 					var result = data.jsonResponse;
+					if(result.state != 0){
+						$cache.submit.html("您已经发布任务请勿重复提交").css('backgroundColor', '#c2c2c2');
+						submitLock = true;
+					}
 					var img, imgIndex = 0, imgList = '';
 					for (img in result) {
 						imgIndex += 1;
 						if (/img\d/.test(img) && result[img] != null) {
-							imgList += '<li id="img' + imgIndex + '" style="background-image: url(/' + result[img] + ');"><b>X</b></li>';
+							imgList += '<li id="img' + imgIndex + '" style="background-image: url(../' + result[img] + ');"><b>X</b></li>';
 							imgArr.push(result[img]);
 						}
 					}
@@ -678,6 +688,14 @@
 
 		});
 		$cache.submit.on('click', function(e) {
+			if(submitLock){
+				return false;
+			}
+			if($cache.textCent.val().length == ''){
+				alert('请写一些东西吧!');
+				$cache.textCent.focus();
+				return false;
+			}
 			var data = {
 				content: $cache.textCent.val(),
 				taskid: taskid
@@ -742,7 +760,9 @@
 						$cache.tmpHtml.attr('openid', row.openid);
 						$('.index', $cache.tmpHtml).html(row.rank);
 						$('.name', $cache.tmpHtml).html(row.username);
-						$('.portrait', $cache.tmpHtml).css('backgroundImage', 'url('+row.userimg+')');
+						if(row.userimg){
+							$('.portrait', $cache.tmpHtml).css('backgroundImage', 'url('+row.userimg+')');
+						}
 						$('.tit', $cache.tmpHtml).html(row.taskname);
 						$('.cent', $cache.tmpHtml).html(row.content);
 						$('.num', $cache.tmpHtml).html(row.lovenum);
@@ -900,7 +920,9 @@
 						$.cookie('taskShareId', result.id);
 						//$cache.titBox.attr('taskid', result.id);
 						$('.name', $cache.titBox).html(result.username);
-						$('.portrait', $cache.titBox).css('backgroundImage', 'url('+result.userimg+')');
+						if(result.userimg){
+							$('.portrait', $cache.titBox).css('backgroundImage', 'url('+result.userimg+')');
+						}
 						$('.title', $cache.titBox).html(result.taskname);
 						$('.cent', $cache.titBox).html(result.content);
 						$('.numBox .num').html(result.lovenum);
@@ -915,9 +937,9 @@
 							timeLineLink : urlpath.absolute + "main.html#type=other&taskuserid="+taskuserid,
 							sendFriendLink : urlpath.absolute + "main.html#type=other&taskuserid="+taskuserid,
 							weiboLink : urlpath.absolute + "main.html#type=other&taskuserid="+taskuserid,
-							tTitle : result.taskname,
+							tTitle : result.taskdesp,
 							tContent : result.taskdesp,
-							fTitle : result.taskname,
+							fTitle : result.taskdesp,
 							fContent : result.taskdesp,
 							wContent : result.taskdesp,
 						};
@@ -961,7 +983,9 @@
 						}
 						$cache.titBox.attr('taskid', result.id);
 						$('.name', $cache.titBox).html(result.username);
-						$('.portrait', $cache.titBox).css('backgroundImage', 'url('+result.userimg+')');
+						if(result.userimg){
+							$('.portrait', $cache.titBox).css('backgroundImage', 'url('+result.userimg+')');
+						}
 						$('.title', $cache.titBox).html(result.taskname);
 						$('.cent', $cache.titBox).html(result.content);
 						$cache.loveBtn = $('.loveBtn .num');
@@ -976,9 +1000,9 @@
 							timeLineLink : urlpath.absolute + "index.html",
 							sendFriendLink : urlpath.absolute + "index.html",
 							weiboLink : urlpath.absolute + "index.html",
-							tTitle : result.taskname,
+							tTitle : result.taskdesp,
 							tContent : result.taskdesp,
-							fTitle : result.taskname,
+							fTitle : result.taskdesp,
 							fContent : result.taskdesp,
 							wContent : result.taskdesp,
 						};
@@ -1016,16 +1040,18 @@
 						$('.title', $cache.titBox).html('我已经领取本月泉心任务');
 						$('.name', $cache.titBox).html(result.username);
 						$('.cent', $cache.titBox).html(result.taskname).css({'fontSize': '30px', 'paddingBottom': '80px'});
-						$('.portrait', $cache.titBox).css('backgroundImage', 'url('+result.userimg+')');
+						if(result.userimg){
+							$('.portrait', $cache.titBox).css('backgroundImage', 'url('+result.userimg+')');
+						}
 						pgScroll[0].refresh();
 						var share = {
 							imgUrl : urlpath.absolute + '../' + result.tasksmallimg,
 							timeLineLink : urlpath.absolute + "index.html",
 							sendFriendLink : urlpath.absolute + "index.html",
 							weiboLink : urlpath.absolute + "index.html",
-							tTitle : result.taskname,
+							tTitle : result.taskdesp,
 							tContent : result.taskdesp,
-							fTitle : result.taskname,
+							fTitle : result.taskdesp,
 							fContent : result.taskdesp,
 							wContent : result.taskdesp,
 						};
@@ -1053,6 +1079,8 @@
 						$cache.popShare1.hide();
 						pgScroll[0].enable();
 					}, 2000);
+				}).on('click', '.goback', function(e){
+					window.location.href = "index.html";
 				});
 				getusertask();
 				break;
@@ -1067,7 +1095,9 @@
 						$cache.popShare1.hide();
 						pgScroll[0].enable();
 					}, 2000);
-				});
+				}).on('click', '.goback', function(e){
+					window.location.href = "index.html";
+				});;
 				getusertask();
 				break;
 			case 'other':
