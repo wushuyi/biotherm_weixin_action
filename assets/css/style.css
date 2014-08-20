@@ -223,8 +223,7 @@ a.block {
 }
 #index .info .centBox .js .cent .mainPic {
   display: block;
-  position: absolute;
-  bottom: 0px;
+  margin: 0 auto;
 }
 #index .btNav {
   width: 640px;
@@ -1089,9 +1088,10 @@ a.block {
 #regmobile #updata .subCode {
   width: 220px;
   height: 74px;
+  padding: 0px;
   border: none;
   color: #FFFFFF;
-  font-size: 30px;
+  font-size: 28px;
   background-color: #258FB6;
   border-radius: 8px;
   position: absolute;

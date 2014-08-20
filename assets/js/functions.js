@@ -25,14 +25,14 @@
 
 	if (isdebug) {
 		if (!have_openid) {
-			window.location.href = '/Handler.ashx';
+			window.location.href = '../Handler.ashx';
 		}
 	} else {
 		if (!is_weixin) {
 			//alert('请在微信浏览器中打开!');
 			//window.location.href = 'http://m.biotherm.com.cn/';
 		} else if (!have_openid) {
-			window.location.href = '/Handler.ashx';
+			window.location.href = '../Handler.ashx';
 		} else {
 			window.pgLock = true;
 			
@@ -234,7 +234,7 @@
 		$.ajax({
 			type : "POST",
 			dataType : 'json',
-			url : "/issubscribe.ashx",
+			url : "../issubscribe.ashx",
 			success : function(data) {
 				if (data.result == 'success') {
 					isFocus = true;
@@ -249,7 +249,6 @@
 				}
 			},
 			error : function() {
-				focus();
 				alert('加载失败,请检查您的网络!');
 			}
 		});
@@ -257,7 +256,7 @@
 		$.ajax({
 			type : "GET",
 			dataType : 'json',
-			url : "/task.ashx",
+			url : "../task.ashx",
 			cache : false,
 			success : function(data) {
 				if (data.result == 'success') {
@@ -267,57 +266,58 @@
 					$cache.taskName.html(result.taskname);
 					$cache.taskDate.html(taskDate);
 					$cache.taskCent.html(result.taskcontent);
-					$cache.mainPic.attr('src', result.taskbigimg);
+					$cache.mainPic.attr('src', '../'+result.taskbigimg);
 					$.cookie('taskid', result.id);
 					switch(result.state) {
 						case 'no get':
-							var data = {
-								taskid : $.cookie('taskid')
-							};
-							$.ajax({
-								type : "POST",
-								dataType : 'json',
-								data : data,
-								url : "/gettask.ashx",
-								success : function(data) {
-									lqrwBtnLock = false;
-									if (data.result == 'success') {
-										//alert('任务领取成功!');
-										$cache.lqrwBtn.html('领取任务').on('click', function(e) {
-											window.location.href = './main.html#type=share';
-										});
-									} else if (data.result == 'failed') {
-										if (data.jsonResponse == 'have get') {
-											//alert('您已经领取过该任务!');
-											$cache.lqrwBtn.html('继续任务').on('click', function(e) {
-												window.location.href = './upload.html';
-											});
-										} else if (data.jsonResponse == 'no reg') {
-											//alert('请先绑定手机再进行任务!');
-											$cache.lqrwBtn.html('领取任务').on('click', function(e) {
-												if(!isFocus){
-													$cache.pop.show();
-													$cache.popShare2.show();
-													setTimeout(function() {
-														$cache.pop.hide();
-														$cache.popShare2.hide();
-														pgScroll[0].enable();
-													}, 2000);
-													return false;
-												}
-												window.location.href = './regmobile.html';
-											});
-										} else {
-											alert('未知参数: ' + data.jsonResponse);
-										}
-									} else {
-										alert('服务器错误!');
-									}
-								},
-								error : function() {
-									lqrwBtnLock = false;
-									alert('加载失败,请检查您的网络!');
+							var lqrwBtnLock = false;
+							$cache.lqrwBtn.html('领取任务').on('click', function(e) {
+								if(!isFocus){
+									//alert('请先关注碧欧泉!');
+									$cache.pop.show();
+									$cache.popShare2.show();
+									setTimeout(function() {
+										$cache.pop.hide();
+										$cache.popShare2.hide();
+										pgScroll[0].enable();
+									}, 2000);
+									return false;
 								}
+								if(lqrwBtnLock){
+									return false;
+								}
+								lqrwBtnLock = true;
+								var data = {
+									taskid : $.cookie('taskid')
+								};
+								$.ajax({
+									type : "POST",
+									dataType : 'json',
+									data : data,
+									url : "../gettask.ashx",
+									success : function(data) {
+										lqrwBtnLock = false;
+										if (data.result == 'success') {
+											//alert('任务领取成功!');
+											window.location.href = './main.html#type=share';
+										} else if (data.result == 'failed') {
+											if (data.jsonResponse == 'no reg') {
+												//alert('请先绑定手机再进行任务!');
+												window.location.href = './regmobile.html';
+											} else if (data.jsonResponse == 'have get') {
+												alert('您已经领取过该任务!');
+											} else {
+												alert('未知参数: ' + data.jsonResponse);
+											}
+										} else {
+											alert('服务器错误!');
+										}
+									},
+									error : function() {
+										lqrwBtnLock = false;
+										alert('加载失败,请检查您的网络!');
+									}
+								});
 							});
 							break;
 						case 'no submit':
@@ -336,15 +336,15 @@
 						default:
 					}
 					var share = {
-						imgUrl : window.location.origin + result.tasksmallimg,
-						timeLineLink : 'http://112.124.70.247/weoper/mobile.php?act=module&name=yswfcommon&do=ApiSnsapiBase&weid=9&siteRetUrl='+'http://task.wangfan.com/test/index.html'+'?source=friends',
-						sendFriendLink : 'http://112.124.70.247/weoper/mobile.php?act=module&name=yswfcommon&do=ApiSnsapiBase&weid=9&siteRetUrl='+'http://task.wangfan.com/test/index.html'+'?source=friends',
-						weiboLink : 'http://112.124.70.247/weoper/mobile.php?act=module&name=yswfcommon&do=ApiSnsapiBase&weid=9&siteRetUrl='+'http://task.wangfan.com/test/index.html'+'?source=friends',
+						imgUrl : urlpath.absolute + '../' + result.tasksmallimg,
+						timeLineLink : urlpath.absolute + "index.html",
+						sendFriendLink : urlpath.absolute + "index.html",
+						weiboLink : urlpath.absolute + "index.html",
 						tTitle : result.taskname,
-						tContent : result.taskname,
+						tContent : result.taskdesp,
 						fTitle : result.taskname,
-						fContent : result.taskname,
-						wContent : result.taskname,
+						fContent : result.taskdesp,
+						wContent : result.taskdesp,
 					};
 					window.shareData = share;
 					pgFun.setShare();
@@ -418,7 +418,7 @@
 			$.ajax({
 				type : "POST",
 				dataType : 'json',
-				url : "/bindinggettask.ashx",
+				url : "../bindinggettask.ashx",
 				data : data,
 				success : function(data) {
 					subAllLock = false;
@@ -469,17 +469,18 @@
 			$.ajax({
 				type : "POST",
 				dataType : 'json',
-				url : "/sendmsg.ashx",
+				url : "../sendmsg.ashx",
 				data : data,
 				success : function(data) {
 					if (data.result == 'success') {
-						var num = 90;
+						var num = 60;
+						$cache.subCode.css('backgroundColor', '#C9C9C9');
 						var clock = setInterval(function() {
 							$cache.subCode.html(num + 's 重新获取');
 							num -= 1;
 							if (num == 0) {
 								clearInterval(clock);
-								$cache.subCode.html('获取验证码');
+								$cache.subCode.html('获取验证码').removeAttr('style');
 								subCodeLock = false;
 							}
 						}, 1000);
@@ -527,8 +528,7 @@
 		$.ajax({
 			type : "POST",
 			dataType : 'json',
-			url : "/getusertask.ashx",
-			cache : false,
+			url : "../getusertask.ashx",
 			data : data,
 			success : function(data) {
 				//console.log(data);
@@ -606,7 +606,7 @@
 				};
 				$.ajax({
 					type : 'POST',
-					url : "/uploadtaskimgBase.ashx",
+					url : "../uploadtaskimgBase.ashx",
 					dataType : 'json',
 					data : data,
 					xhr : function() {
@@ -655,7 +655,7 @@
 			console.log(data);
 			$.ajax({
 				type : "POST",
-				url : "/deltaskimg.ashx",
+				url : "../deltaskimg.ashx",
 				dataType : 'json',
 				data : data,
 				success : function(data) {
@@ -688,7 +688,7 @@
 			}
 			$.ajax({
 				type : "POST",
-				url : "/tasksubmit.ashx",
+				url : "../tasksubmit.ashx",
 				dataType : 'json',
 				data : data,
 				success : function(data) {
@@ -718,7 +718,7 @@
 		$.ajax({
 			type : "POST",
 			dataType : 'json',
-			url : "/taskrank.ashx",
+			url : "../taskrank.ashx",
 			//url : "./assets/json/taskrank.js",
 			data : data,
 			success : function(data) {
@@ -733,7 +733,7 @@
 						for (img in row) {
 							if (/img\d/.test(img) && row[img] != null) {
 								//imgArr.push(row[img]);
-								imgList += '<li style="background-image: url(/' + row[img] + ');"></li>';
+								imgList += '<li style="background-image: url(../' + row[img] + ');"></li>';
 							}
 						}
 						//console.log(imgArr);
@@ -743,6 +743,7 @@
 						$('.index', $cache.tmpHtml).html(row.rank);
 						$('.name', $cache.tmpHtml).html(row.username);
 						$('.portrait', $cache.tmpHtml).css('backgroundImage', 'url('+row.userimg+')');
+						$('.tit', $cache.tmpHtml).html(row.taskname);
 						$('.cent', $cache.tmpHtml).html(row.content);
 						$('.num', $cache.tmpHtml).html(row.lovenum);
 						$('.imgBox ul', $cache.tmpHtml).html(imgList);
@@ -793,7 +794,7 @@
 		$.ajax({
 			type : "GET",
 			dataType : 'json',
-			url : "/taskhistory.ashx",
+			url : "../taskhistory.ashx",
 			//url : "./assets/json/taskhistory.js",
 			cache : false,
 			success : function(data) {
@@ -809,7 +810,7 @@
 						$('.mouth', $cache.tmpHtml).html(getMouth(row.taskstartdate) + '月');
 						$('.rw .cent', $cache.tmpHtml).html(row.taskname);
 						$('.jj .cent', $cache.tmpHtml).html(row.taskcontent.replace(/<[^>]+>/g,""));
-						$('.imgBox ul', $cache.tmpHtml).html('<li style="background-image: url(' + row.tasksmallimg + ');"></li>');
+						$('.imgBox ul', $cache.tmpHtml).html('<li style="background-image: url(../' + row.tasksmallimg + ');"></li>');
 						$('.num', $cache.tmpHtml).html(row.usernum);
 						$cache.resultHtml += $cache.tmpHtml.prop("outerHTML");
 					}
@@ -883,8 +884,7 @@
 			$.ajax({
 				type : "POST",
 				dataType : 'json',
-				url : "/getusertask.ashx",
-				cache : false,
+				url : "../getusertask.ashx",
 				data : data,
 				success : function(data) {
 					//console.log(data);
@@ -894,7 +894,7 @@
 						for (img in result) {
 							imgIndex += 1;
 							if (/img\d/.test(img) && result[img] != null) {
-								imgList += '<li id="img' + imgIndex + '" style="background-image: url(/' + result[img] + ');"></li>';
+								imgList += '<li id="img' + imgIndex + '" style="background-image: url(../' + result[img] + ');"></li>';
 							}
 						}
 						$.cookie('taskShareId', result.id);
@@ -911,15 +911,15 @@
 						pgScroll[0].refresh();
 						var taskuserid = $.cookie('taskShareId');
 						var share = {
-							imgUrl : window.location.origin + result.tasksmallimg,
+							imgUrl : urlpath.absolute + '../' + result.tasksmallimg,
 							timeLineLink : urlpath.absolute + "main.html#type=other&taskuserid="+taskuserid,
 							sendFriendLink : urlpath.absolute + "main.html#type=other&taskuserid="+taskuserid,
 							weiboLink : urlpath.absolute + "main.html#type=other&taskuserid="+taskuserid,
 							tTitle : result.taskname,
-							tContent : result.taskname,
+							tContent : result.taskdesp,
 							fTitle : result.taskname,
-							fContent : result.taskname,
-							wContent : result.taskname,
+							fContent : result.taskdesp,
+							wContent : result.taskdesp,
 						};
 						window.shareData = share;
 						//console.log(share);
@@ -942,11 +942,11 @@
 			var data = {
 				taskuserid: taskuserid
 			};
-			console.log(data);
+			//console.log(data);
 			$.ajax({
 				type : "POST",
 				dataType : 'json',
-				url : "/getusertaskfriend.ashx",
+				url : "../getusertaskfriend.ashx",
 				data : data,
 				success : function(data) {
 					//console.log(data);
@@ -956,7 +956,7 @@
 						for (img in result) {
 							imgIndex += 1;
 							if (/img\d/.test(img) && result[img] != null) {
-								imgList += '<li id="img' + imgIndex + '" style="background-image: url(/' + result[img] + ');"></li>';
+								imgList += '<li id="img' + imgIndex + '" style="background-image: url(../' + result[img] + ');"></li>';
 							}
 						}
 						$cache.titBox.attr('taskid', result.id);
@@ -964,11 +964,27 @@
 						$('.portrait', $cache.titBox).css('backgroundImage', 'url('+result.userimg+')');
 						$('.title', $cache.titBox).html(result.taskname);
 						$('.cent', $cache.titBox).html(result.content);
-						$('.loveBtn .num').html(result.lovenum);
+						$cache.loveBtn = $('.loveBtn .num');
+						$cache.loveBtn.html(result.lovenum);
 						$cache.imgBox.html(imgList);
 						$cache.zoomImgUl.html(imgList);
 						zoomImg();
 						pgScroll[0].refresh();
+						
+						var share = {
+							imgUrl : urlpath.absolute + '../' + result.tasksmallimg,
+							timeLineLink : urlpath.absolute + "index.html",
+							sendFriendLink : urlpath.absolute + "index.html",
+							weiboLink : urlpath.absolute + "index.html",
+							tTitle : result.taskname,
+							tContent : result.taskdesp,
+							fTitle : result.taskname,
+							fContent : result.taskdesp,
+							wContent : result.taskdesp,
+						};
+						window.shareData = share;
+						pgFun.setShare();
+						
 					} else if (data.result == 'failed') {
 						alert('服务器错误!');
 					}
@@ -990,7 +1006,7 @@
 			$.ajax({
 				type : "POST",
 				dataType : 'json',
-				url : "/getusertask.ashx",
+				url : "../getusertask.ashx",
 				cache : false,
 				data : data,
 				success : function(data) {
@@ -1003,15 +1019,15 @@
 						$('.portrait', $cache.titBox).css('backgroundImage', 'url('+result.userimg+')');
 						pgScroll[0].refresh();
 						var share = {
-							imgUrl : window.location.origin + result.tasksmallimg,
+							imgUrl : urlpath.absolute + '../' + result.tasksmallimg,
 							timeLineLink : urlpath.absolute + "index.html",
 							sendFriendLink : urlpath.absolute + "index.html",
 							weiboLink : urlpath.absolute + "index.html",
 							tTitle : result.taskname,
-							tContent : result.taskname,
+							tContent : result.taskdesp,
 							fTitle : result.taskname,
-							fContent : result.taskname,
-							wContent : result.taskname,
+							fContent : result.taskdesp,
+							wContent : result.taskdesp,
 						};
 						window.shareData = share;
 						//console.log(share);
@@ -1072,6 +1088,7 @@
 				}else{
 					onBridgeReady();
 				}
+				
 				function unfocus() {
 					$cache.yqdz3 = $('#yqdz3');
 					$cache.yqdz3.show().on('click', '.weixin', function(e) {
@@ -1089,13 +1106,17 @@
 						alert('请先关注,碧欧泉微信!');
 					});
 					getusertaskfriend();
-				}
-
+				};
+				var loveBtnLock = false;
 				function focus() {
 					$cache.yqdz4 = $('#yqdz4');
 					$cache.yqdz4.show().on('click', '.submit', function(e) {
 						window.location.href = "./index.html";
 					}).on('click', '.loveBtn', function(e) {
+						if(loveBtnLock){
+							return false;
+						}
+						loveBtnLock = true;
 						var taskuserid = url.fparam('taskuserid');
 						var data = {
 							taskuserid: taskuserid
@@ -1103,12 +1124,14 @@
 						$.ajax({
 							type : "POST",
 							dataType : 'json',
-							url : "/lovetask.ashx",
+							url : "../lovetask.ashx",
 							data : data,
 							success : function(data) {
+								loveBtnLock = false;
 								//console.log(data);
 								if (data.result == 'success') {
 									alert('点赞成功!, 感谢您的支持!');
+									$cache.loveBtn.html(parseInt($cache.loveBtn.html()) + 1);
 								} else if (data.result == 'failed') {
 									switch(data.jsonResponse) {
 										case 'have support':
@@ -1126,17 +1149,19 @@
 								}
 							},
 							error : function() {
+								loveBtnLock = false;
 								alert('加载失败,请检查您的网络!');
 							}
 						});
 					});
 					getusertaskfriend();
-				}
+				};
 
 				$.ajax({
-					type : "POST",
+					type : "GET",
 					dataType : 'json',
-					url : "/issubscribe.ashx",
+					url : "../issubscribe.ashx",
+					cache : false,
 					success : function(data) {
 						//console.log(data);
 						//alert(data.result);
@@ -1159,7 +1184,6 @@
 				});
 				break;
 			case 'share':
-				
 				$cache.yqdz5 = $('#yqdz5');
 				$cache.yqdz5.css({
 					'display': 'block',
