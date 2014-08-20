@@ -529,14 +529,22 @@ a.block {
 #main #yqdz3 .loveBtn:after {
   content: '';
   display: block;
-  width: 60px;
-  height: 60px;
   position: absolute;
-  top: 40px;
-  left: 40px;
+  top: 20px;
+  left: 48px;
+  width: 49px;
+  height: 53px;
   background-image: url('../image/icon_16.png');
   background-repeat: no-repeat;
-  background-size: 100% auto;
+}
+#main #yqdz3 .loveBtn .num {
+  font-size: 32px;
+  display: block;
+  position: absolute;
+  bottom: 24px;
+  width: 100%;
+  font-weight: bold;
+  text-align: center;
 }
 #main #yqdz3 .weixin {
   width: 570px;
@@ -609,14 +617,22 @@ a.block {
 #main #yqdz4 .loveBtn:after {
   content: '';
   display: block;
-  width: 60px;
-  height: 60px;
   position: absolute;
-  top: 40px;
-  left: 40px;
+  top: 20px;
+  left: 48px;
+  width: 49px;
+  height: 53px;
   background-image: url('../image/icon_16.png');
   background-repeat: no-repeat;
-  background-size: 100% auto;
+}
+#main #yqdz4 .loveBtn .num {
+  font-size: 32px;
+  display: block;
+  position: absolute;
+  bottom: 24px;
+  width: 100%;
+  font-weight: bold;
+  text-align: center;
 }
 #main #yqdz4 .submit {
   width: 570px;

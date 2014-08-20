@@ -337,9 +337,9 @@
 					}
 					var share = {
 						imgUrl : window.location.origin + result.tasksmallimg,
-						timeLineLink : urlpath.absolute + "index.html",
-						sendFriendLink : urlpath.absolute + "index.html",
-						weiboLink : urlpath.absolute + "index.html",
+						timeLineLink : 'http://112.124.70.247/weoper/mobile.php?act=module&name=yswfcommon&do=ApiSnsapiBase&weid=9&siteRetUrl='+'http://task.wangfan.com/test/index.html'+'?source=friends',
+						sendFriendLink : 'http://112.124.70.247/weoper/mobile.php?act=module&name=yswfcommon&do=ApiSnsapiBase&weid=9&siteRetUrl='+'http://task.wangfan.com/test/index.html'+'?source=friends',
+						weiboLink : 'http://112.124.70.247/weoper/mobile.php?act=module&name=yswfcommon&do=ApiSnsapiBase&weid=9&siteRetUrl='+'http://task.wangfan.com/test/index.html'+'?source=friends',
 						tTitle : result.taskname,
 						tContent : result.taskname,
 						fTitle : result.taskname,
@@ -559,6 +559,12 @@
 				alert('对不起, 最多只能上传9张!');
 				return;
 			}
+			var liTmp = $('<li>0%</li>').css({
+				'text-align': 'center',
+				'line-height': '120px',
+				'background-color': '#222222'
+			});
+			$cache.imgListUl.append(liTmp);
 			var file = e.target.files[0];
 			var reader = new FileReader();
 			var image;
@@ -590,7 +596,10 @@
 				context.drawImage(image, 0, 0, imgW, imgH);
 				context.save();
 				var imgdata = canvas.toDataURL('image/png', 1);
-				var html = $('<li><b>X</b></li>').css('backgroundImage', 'url("' + imgdata + '")');
+				//var html = $('<li><b>X</b></li>').css('backgroundImage', 'url("' + imgdata + '")');
+				
+				
+				$cache.thisImgListLi = $('li:last', $cache.imgListUl);
 				var data = {
 					imgstr : imgdata,
 					taskid : taskid
@@ -611,6 +620,7 @@
 									percent = Math.ceil(position / total * 100);
 								}
 								//$('.cent').html(percent);
+								$cache.thisImgListLi.html(percent+'%');
 							}, false);
 						}
 						return xhrobj;
@@ -618,7 +628,8 @@
 					success : function(data) {
 						//console.log(data);
 						if (data.result == 'success') {
-							$cache.imgListUl.append(html);
+							//$cache.imgListUl.append(html);
+							$cache.thisImgListLi.removeAttr('style').html('<b>X</b>').css('backgroundImage', 'url("' + imgdata + '")');
 							imgArr.push(data.jsonResponse);
 							//console.log(imgArr);
 							//alert(data.jsonResponse);
@@ -892,6 +903,7 @@
 						$('.portrait', $cache.titBox).css('backgroundImage', 'url('+result.userimg+')');
 						$('.title', $cache.titBox).html(result.taskname);
 						$('.cent', $cache.titBox).html(result.content);
+						$('.numBox .num').html(result.lovenum);
 						
 						$cache.imgBox.html(imgList);
 						$cache.zoomImgUl.html(imgList);
@@ -952,6 +964,7 @@
 						$('.portrait', $cache.titBox).css('backgroundImage', 'url('+result.userimg+')');
 						$('.title', $cache.titBox).html(result.taskname);
 						$('.cent', $cache.titBox).html(result.content);
+						$('.loveBtn .num').html(result.lovenum);
 						$cache.imgBox.html(imgList);
 						$cache.zoomImgUl.html(imgList);
 						zoomImg();
