@@ -16,7 +16,7 @@
 	})();
 
 	var have_openid = (function() {
-		if ($.cookie('taskOpenID')) {
+		if ($.cookie('biothermOpenID')) {
 			return true;
 		} else {
 			return false;
@@ -40,6 +40,14 @@
 	}
 	
 	window.pgLock = true;
+	
+	
+	/* 百度统计 */
+	var _bdhmProtocol = (("https:" == document.location.protocol) ? " https://" : " http://");
+	document.write(unescape("%3Cscript src='" + _bdhmProtocol + "hm.baidu.com/h.js%3Fb815daa1d02964fc5048838a34259329' type='text/javascript'%3E%3C/script%3E"));
+	$(document).ready(function(){
+		$('body a:eq(0)').hide();
+	});
 })();
 
 ;(function(fun, scroll, global) {
@@ -466,27 +474,53 @@
 			var data = {
 				mobile : mobile
 			};
+			
+			function bindreg() {
+				$.ajax({
+					type : "POST",
+					dataType : 'json',
+					url : "../sendmsg.ashx",
+					data : data,
+					success : function(data) {
+						if (data.result == 'success') {
+							var num = 60;
+							$cache.subCode.css('backgroundColor', '#C9C9C9');
+							var clock = setInterval(function() {
+								$cache.subCode.html(num + 's 重新获取');
+								num -= 1;
+								if (num == 0) {
+									clearInterval(clock);
+									$cache.subCode.html('获取验证码').removeAttr('style');
+									subCodeLock = false;
+								}
+							}, 1000);
+						} else if (data.result == 'failed') {
+							subCodeLock = false;
+							alert('服务器错误!');
+						}
+					},
+					error : function() {
+						subCodeLock = false;
+						alert('加载失败,请检查您的网络!');
+					}
+				});
+			};
+			
 			$.ajax({
-				type : "POST",
+				type: "POST",
 				dataType : 'json',
-				url : "../sendmsg.ashx",
+				url : "../IsMobileBind.ashx",
 				data : data,
 				success : function(data) {
 					if (data.result == 'success') {
-						var num = 60;
-						$cache.subCode.css('backgroundColor', '#C9C9C9');
-						var clock = setInterval(function() {
-							$cache.subCode.html(num + 's 重新获取');
-							num -= 1;
-							if (num == 0) {
-								clearInterval(clock);
-								$cache.subCode.html('获取验证码').removeAttr('style');
-								subCodeLock = false;
-							}
-						}, 1000);
+						bindreg();
 					} else if (data.result == 'failed') {
 						subCodeLock = false;
-						alert('服务器错误!');
+						if(data.jsonResponse == "mobile bind exist"){
+							alert("对不起,该号码已绑定其他微信号!");
+						}else{
+							alert('服务器错误!');
+						}
 					}
 				},
 				error : function() {
