@@ -158,6 +158,7 @@
 		 * 输入框 提示信息 兼容性处理  by 巫书轶
 		 * 用法  tipmsg="str" css : noTip
 		 */
+		 /*
 		$("input[tipMsg]").each(function() {
 			var _thisDom = $(this);
 			if (_thisDom.val() == "") {
@@ -180,6 +181,7 @@
 				});
 			}
 		});
+			*/
 		/*
 		 *	隐藏微信菜单
 		*/
@@ -345,9 +347,9 @@
 					}
 					var share = {
 						imgUrl : urlpath.absolute + '../' + result.tasksmallimg,
-						timeLineLink : urlpath.absolute + "index.html",
-						sendFriendLink : urlpath.absolute + "index.html",
-						weiboLink : urlpath.absolute + "index.html",
+						timeLineLink : urlpath.absolute + "index.html#source=weixin",
+						sendFriendLink : urlpath.absolute + "index.html#source=weixin",
+						weiboLink : urlpath.absolute + "index.html#source=weixin",
 						tTitle : result.taskdesp,
 						tContent : result.taskdesp,
 						fTitle : result.taskdesp,
@@ -431,7 +433,7 @@
 				success : function(data) {
 					subAllLock = false;
 					if (data.result == 'success') {
-						alert('绑定成功!');
+						//alert('绑定成功!');
 						window.location.href = 'main.html#type=share';
 					} else if (data.result == 'failed') {
 						switch(data.jsonResponse) {
@@ -968,9 +970,9 @@
 						var taskuserid = $.cookie('taskShareId');
 						var share = {
 							imgUrl : urlpath.absolute + '../' + result.tasksmallimg,
-							timeLineLink : urlpath.absolute + "main.html#type=other&taskuserid="+taskuserid,
-							sendFriendLink : urlpath.absolute + "main.html#type=other&taskuserid="+taskuserid,
-							weiboLink : urlpath.absolute + "main.html#type=other&taskuserid="+taskuserid,
+							timeLineLink : urlpath.absolute + "main.html#source=weixin&type=other&taskuserid="+taskuserid,
+							sendFriendLink : urlpath.absolute + "main.html#source=weixin&type=other&taskuserid="+taskuserid,
+							weiboLink : urlpath.absolute + "main.html#source=weixin&type=other&taskuserid="+taskuserid,
 							tTitle : result.taskdesp,
 							tContent : result.taskdesp,
 							fTitle : result.taskdesp,
@@ -1031,9 +1033,9 @@
 						
 						var share = {
 							imgUrl : urlpath.absolute + '../' + result.tasksmallimg,
-							timeLineLink : urlpath.absolute + "index.html",
-							sendFriendLink : urlpath.absolute + "index.html",
-							weiboLink : urlpath.absolute + "index.html",
+							timeLineLink : urlpath.absolute + "index.html#source=weixin",
+							sendFriendLink : urlpath.absolute + "index.html#source=weixin",
+							weiboLink : urlpath.absolute + "index.html#source=weixin",
 							tTitle : result.taskdesp,
 							tContent : result.taskdesp,
 							fTitle : result.taskdesp,
@@ -1080,9 +1082,9 @@
 						pgScroll[0].refresh();
 						var share = {
 							imgUrl : urlpath.absolute + '../' + result.tasksmallimg,
-							timeLineLink : urlpath.absolute + "index.html",
-							sendFriendLink : urlpath.absolute + "index.html",
-							weiboLink : urlpath.absolute + "index.html",
+							timeLineLink : urlpath.absolute + "index.html#source=weixin",
+							sendFriendLink : urlpath.absolute + "index.html#source=weixin",
+							weiboLink : urlpath.absolute + "index.html#source=weixin",
 							tTitle : result.taskdesp,
 							tContent : result.taskdesp,
 							fTitle : result.taskdesp,
