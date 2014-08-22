@@ -200,6 +200,15 @@
 			onBridgeReady();
 		}
 	};
+	pgFun.onLoad = function(){
+		$cache.load = $('#loading');
+		setTimeout(function(){
+			$cache.load.addClass('close');
+			setTimeout(function(){
+				$cache.load.hide();
+			}, 1000);
+		}, 2000);
+	};
 	pgFun.pubScroll = function(obj) {
 		$cache.mainPg = $('.wrapper');
 		if (obj == false) {
@@ -368,6 +377,7 @@
 				} else {
 					alert('服务器错误!');
 				}
+				pgFun.onLoad();
 			},
 			error : function() {
 				alert('加载失败,请检查您的网络!');
@@ -402,6 +412,7 @@
 		$cache.code = $('input.code', $cache.upBox);
 		$cache.subCode = $('button.subCode', $cache.upBox);
 		$cache.subAll = $('button.subAll', $cache.upBox);
+		pgFun.onLoad();
 		var subAllLock = false;
 		$cache.subAll.on('click', function(e) {
 			var mobile = $cache.mobile.val();
@@ -589,7 +600,7 @@
 					if(result.state != 0){
 						//$cache.submit.html("您已经发布任务请勿重复提交").css('backgroundColor', '#c2c2c2');
 						//submitLock = true;
-						//window.location.href = './index.html';
+						window.location.href = './index.html';
 					}
 					var img, imgIndex = 0, imgList = '';
 					for (img in result) {
@@ -605,6 +616,7 @@
 				} else if (data.result == 'failed') {
 					alert('服务器错误!');
 				}
+				pgFun.onLoad();
 			},
 			error : function() {
 				alert('加载失败,请检查您的网络!');
@@ -933,6 +945,7 @@
 					}
 						
 				}
+				pgFun.onLoad();
 			},
 			error : function() {
 				alert('加载失败,请检查您的网络!');
@@ -991,6 +1004,7 @@
 				} else if (data.result == 'failed') {
 					alert('服务器错误!');
 				}
+				pgFun.onLoad();
 			},
 			error : function() {
 				alert('加载失败,请检查您的网络!');
@@ -1101,6 +1115,7 @@
 					} else if (data.result == 'failed') {
 						alert('服务器错误!');
 					}
+					pgFun.onLoad();
 				},
 				error : function() {
 					alert('加载失败,请检查您的网络!');
@@ -1164,6 +1179,7 @@
 					} else if (data.result == 'failed') {
 						alert('服务器错误!');
 					}
+					pgFun.onLoad();
 				},
 				error : function() {
 					alert('加载失败,请检查您的网络!');
@@ -1213,6 +1229,7 @@
 					} else if (data.result == 'failed') {
 						alert('服务器错误!');
 					}
+					pgFun.onLoad();
 				},
 				error : function() {
 					alert('加载失败,请检查您的网络!');
