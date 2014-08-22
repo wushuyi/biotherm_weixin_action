@@ -541,6 +541,7 @@
 		this.pubInit();
 		this.pubScroll(false);
 		var imgArr = [];
+		var imgW, imgH, scale, status=0, imgLock = true, image, imgsrc;
 		
 		 Array.prototype.taskRemove = function(dx) {
 		 　		if(isNaN(dx)||dx>this.length){return false;}
@@ -562,6 +563,15 @@
 		$cache.delImg = $('.del', $cache.upImg);
 		$cache.subImg = $('.subImg', $cache.upImg);
 		$cache.submit = $('.submit', $cache.upImg);
+		
+		$cache.review = $('#review');
+		$cache.img = $('.img', $cache.review);
+		
+		$cache.btn_X = $('.close', $cache.review);
+		$cache.btn_L = $('.left', $cache.review);
+		$cache.btn_R = $('.right', $cache.review);
+		$cache.btn_sub = $('.submit', $cache.review);
+		
 		var submitLock = false;
 		var taskid = $.cookie('taskid');
 		var data = {
@@ -577,8 +587,9 @@
 				if (data.result == 'success') {
 					var result = data.jsonResponse;
 					if(result.state != 0){
-						$cache.submit.html("您已经发布任务请勿重复提交").css('backgroundColor', '#c2c2c2');
-						submitLock = true;
+						//$cache.submit.html("您已经发布任务请勿重复提交").css('backgroundColor', '#c2c2c2');
+						//submitLock = true;
+						//window.location.href = './index.html';
 					}
 					var img, imgIndex = 0, imgList = '';
 					for (img in result) {
@@ -599,98 +610,204 @@
 				alert('加载失败,请检查您的网络!');
 			}
 		});
-		
-		$cache.subImg.on('change', function(e) {
+
+		$cache.subImg.on('change', function(e){
 			if (imgArr.length >= 9) {
 				alert('对不起, 最多只能上传9张!');
 				return;
 			}
+			var file = e.target.files[0];
+			if(!file){ return false; }
+			//console.log(file);
+			var URL = window.URL || window.webkitURL;
+			imgsrc = URL.createObjectURL(file);
+			//console.log(imgsrc);
+			image = new Image();
+			image.onload = function() {
+				//imageLoad(this);
+				$cache.review.show();
+				imgLock = false;
+				$cache.img.css('backgroundImage', 'url('+imgsrc+')');
+				imgW = image.width;
+				imgH = image.height;
+				scale = imgW / imgH;
+				//console.log(scale);
+			};
+			image.src = imgsrc;
+			//console.log(imgsrc);
+		});
+		$cache.btn_L.on('click', function(e){
+			if(imgLock){ return false; }
+			status == 3 ? status = 0 :  status += 1;
+			vImg();
+		});
+		$cache.btn_R.on('click', function(e){
+			if(imgLock){ return false; }
+			status == 0 ? status = 3 :  status -= 1;
+			vImg();
+		});
+		$cache.btn_X.on('click', function(e){
+			$cache.subImg.val('');
+			$cache.review.hide();
+			status = 0;
+			vImg();
+			
+		});
+		$cache.btn_sub.on('click', function(e){
+			$cache.subImg.val('');
+			$cache.review.hide();
+			imageLoad(image);
+			status = 0;
+			vImg();
+			
+		});
+		
+		function vImg(){
+			var style = {};
+			switch(status){
+				case 0:
+					style = {
+						transform : 'rotate(0deg)'
+					};
+					break;
+				case 1:
+					style = {
+						transform : 'rotate(90deg) scale('+scale+')'
+					};
+					break;
+				case 2:
+					style = {
+						transform : 'rotate(180deg)'
+					};
+					break;
+				case 3:
+					style = {
+						transform : 'rotate(270deg) scale('+scale+')'
+					};
+					break;
+			}
+			$cache.img.css(style);
+		};
+
+		function imageLoad(img){
+			//console.log(img);
+			var imgW = img.width, imgH = img.height;
+			var canvas = document.createElement('canvas');
+			var du = Math.PI/180;
+			
 			var liTmp = $('<li>0%</li>').css({
 				'text-align': 'center',
 				'line-height': '120px',
 				'background-color': '#222222'
 			});
 			$cache.imgListUl.append(liTmp);
-			var file = e.target.files[0];
-			var reader = new FileReader();
-			var image;
-			reader.readAsDataURL(file);
-			reader.onload = function() {
-				toBase64(reader);
-			};
-			$(this).val('');
-			function toBase64(base64) {
-				var imgsrc = base64.result;
-				//console.log(imgsrc);
-				image = new Image();
-				image.onload = function() {
-					imageLoad(image);
-				};
-				image.src = imgsrc;
-			};
-			function imageLoad(img) {
-				var imgW = img.width, imgH = img.height;
-				if (imgW > 640) {
-					var scal = 640 / imgW;
-					imgW *= scal;
-					imgH *= scal;
-				}
-				var canvas = document.createElement('canvas');
-				canvas.setAttribute('width', imgW + 'px');
-				canvas.setAttribute('height', imgH + 'px');
-				var context = canvas.getContext('2d');
-				context.drawImage(image, 0, 0, imgW, imgH);
-				context.save();
-				var imgdata = canvas.toDataURL('image/png', 1);
-				//var html = $('<li><b>X</b></li>').css('backgroundImage', 'url("' + imgdata + '")');
-				
-				
-				$cache.thisImgListLi = $('li:last', $cache.imgListUl);
-				var data = {
-					imgstr : imgdata,
-					taskid : taskid
-				};
-				$.ajax({
-					type : 'POST',
-					url : "../uploadtaskimgBase.ashx",
-					dataType : 'json',
-					data : data,
-					xhr : function() {
-						var xhrobj = $.ajaxSettings.xhr();
-						if (xhrobj.upload) {
-							xhrobj.upload.addEventListener('progress', function(event) {
-								var percent = 0;
-								var position = event.loaded || event.position;
-								var total = event.total || e.totalSize;
-								if (event.lengthComputable) {
-									percent = Math.ceil(position / total * 100);
-								}
-								//$('.cent').html(percent);
-								$cache.thisImgListLi.html(percent+'%');
-							}, false);
-						}
-						return xhrobj;
-					},
-					success : function(data) {
-						//console.log(data);
-						if (data.result == 'success') {
-							//$cache.imgListUl.append(html);
-							$cache.thisImgListLi.removeAttr('style').html('<b>X</b>').css('backgroundImage', 'url("' + imgdata + '")');
-							imgArr.push(data.jsonResponse);
-							//console.log(imgArr);
-							//alert(data.jsonResponse);
-						}else if(data.result == 'failed') {
-							alert('上传失败!');
-						}else {
-							alert('服务器错误!');
-						}
-					},
-					error : function() {
-						alert('上传失败,请检查您的网络!');
+			pgScroll[0].refresh();
+			switch(status){
+				case 0:
+					if (imgW > 640) {
+						var scal = 640 / imgW;
+						imgW *= scal;
+						imgH *= scal;
 					}
-				});
+					canvas.setAttribute('width', imgW + 'px');
+					canvas.setAttribute('height', imgH + 'px');
+					var context = canvas.getContext('2d');
+					context.translate(0, 0);
+					context.rotate(0*du);
+					context.drawImage(image, 0, 0, imgW, imgH);
+					break;
+				case 1:
+					if (imgH > 640) {
+						var scal = 640 / imgH;
+						imgW *= scal;
+						imgH *= scal;
+					}
+					canvas.setAttribute('width', imgH + 'px');
+					canvas.setAttribute('height', imgW + 'px');
+					var context = canvas.getContext('2d');
+					context.translate(imgH, 0);
+					context.rotate(90*du);
+					context.drawImage(image, 0, 0, imgW, imgH);
+					break;
+				case 2:
+					if (imgW > 640) {
+						var scal = 640 / imgW;
+						imgW *= scal;
+						imgH *= scal;
+					}
+					canvas.setAttribute('width', imgW + 'px');
+					canvas.setAttribute('height', imgH + 'px');
+					var context = canvas.getContext('2d');
+					context.translate(imgW, imgH);
+					context.rotate(180*du);
+					context.drawImage(image, 0, 0, imgW, imgH);
+					break;
+				case 3:
+					if (imgH > 640) {
+						var scal = 640 / imgH;
+						imgW *= scal;
+						imgH *= scal;
+					}
+					canvas.setAttribute('width', imgH + 'px');
+					canvas.setAttribute('height', imgW + 'px');
+					var context = canvas.getContext('2d');
+					context.translate(0, imgW);
+					context.rotate(270*du);
+					context.drawImage(image, 0, 0, imgW, imgH);
+					break;
+				default:
+			}
+			var imgdata = canvas.toDataURL('image/jpeg', 1);
+			//$cache.imgBox.html('<img src="'+imgdata+'" />');
+			console.log(imgdata);
+			$cache.thisImgListLi = $('li:last', $cache.imgListUl);
+			var data = {
+				imgstr : imgdata,
+				taskid : taskid
 			};
-		});
+			$.ajax({
+				type : 'POST',
+				url : "../uploadtaskimgBase.ashx",
+				dataType : 'json',
+				data : data,
+				xhr : function() {
+					var xhrobj = $.ajaxSettings.xhr();
+					if (xhrobj.upload) {
+						xhrobj.upload.addEventListener('progress', function(event) {
+							var percent = 0;
+							var position = event.loaded || event.position;
+							var total = event.total || e.totalSize;
+							if (event.lengthComputable) {
+								percent = Math.ceil(position / total * 100);
+							}
+							//$('.cent').html(percent);
+							$cache.thisImgListLi.html(percent+'%');
+						}, false);
+					}
+					return xhrobj;
+				},
+				success : function(data) {
+					//console.log(data);
+					if (data.result == 'success') {
+						//$cache.imgListUl.append(html);
+						
+						$cache.thisImgListLi.removeAttr('style').html('<b>X</b>').css('backgroundImage', 'url("' + imgdata + '")');
+						imgArr.push(data.jsonResponse);
+						//console.log(imgArr);
+						//alert(data.jsonResponse);
+					}else if(data.result == 'failed') {
+						alert('上传失败!');
+					}else {
+						alert('服务器错误!');
+					}
+				},
+				error : function() {
+					alert('上传失败,请检查您的网络!');
+				}
+			});
+		};
+		
+		
 		$cache.imgList.on('click', 'b', function(e) {
 			var thisLi = $(this).parent('li');
 			var index = thisLi.index();
@@ -721,7 +838,6 @@
 					alert('加载失败,请检查您的网络!');
 				}
 			});
-
 		});
 		$cache.submit.on('click', function(e) {
 			if(submitLock){

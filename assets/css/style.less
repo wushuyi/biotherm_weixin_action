@@ -1274,6 +1274,60 @@ textarea:-moz-placeholder { color:#a9a9a9; }
 			background-position: 540px 24px;
 		}
 	}
+	#review{
+		position: absolute;
+		top: 0px;
+		left: 0px;
+		right: 0px;
+		bottom: 0px;
+		background-color: #141414;
+		overflow: hidden;
+		display: none;
+		.img{
+			width: 100%;
+			height: 100%;
+			background-size: contain;
+			background-position: 50% 50%;
+			background-repeat: no-repeat;
+		}
+		.controlBar{
+			width: 100%;
+			height: 60px;
+			position: absolute;
+			bottom: 0;
+			&:before{
+				content: '';
+				display: block;
+				width: 100%;
+				height: 100%;
+				position: absolute;
+				top: 0px;
+				left: 0px;
+				background-color: #C2C2C2;
+				opacity: 0.6;
+			}
+			button{
+				width: 25%;
+				height: 60px;
+				position: absolute;
+				background: #FFA400;
+				outline: none;
+				border: none;
+			}
+			.close{
+				left: 0px;
+			}
+			.left{
+				left: 25%;
+			}
+			.right{
+				left: 50%;
+			}
+			.submit{
+				left: 75%;
+			}
+		}
+	}
 }
 #taskrank{
 	.pgTop{

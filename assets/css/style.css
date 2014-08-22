@@ -1304,6 +1304,60 @@ a.block {
   background-repeat: no-repeat;
   background-position: 540px 24px;
 }
+#upload #review {
+  position: absolute;
+  top: 0px;
+  left: 0px;
+  right: 0px;
+  bottom: 0px;
+  background-color: #141414;
+  overflow: hidden;
+  display: none;
+}
+#upload #review .img {
+  width: 100%;
+  height: 100%;
+  background-size: contain;
+  background-position: 50% 50%;
+  background-repeat: no-repeat;
+}
+#upload #review .controlBar {
+  width: 100%;
+  height: 60px;
+  position: absolute;
+  bottom: 0;
+}
+#upload #review .controlBar:before {
+  content: '';
+  display: block;
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  top: 0px;
+  left: 0px;
+  background-color: #C2C2C2;
+  opacity: 0.6;
+}
+#upload #review .controlBar button {
+  width: 25%;
+  height: 60px;
+  position: absolute;
+  background: #FFA400;
+  outline: none;
+  border: none;
+}
+#upload #review .controlBar .close {
+  left: 0px;
+}
+#upload #review .controlBar .left {
+  left: 25%;
+}
+#upload #review .controlBar .right {
+  left: 50%;
+}
+#upload #review .controlBar .submit {
+  left: 75%;
+}
 #taskrank .pgTop {
   height: 82px;
   padding-left: 40px;
