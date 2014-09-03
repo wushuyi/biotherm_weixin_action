@@ -79,6 +79,71 @@ a.block {
   position: absolute;
   top: 0px;
 }
+/*
+#loading{
+	
+	position: absolute;
+	top: 0;
+	bottom: 0;
+	left: 0;
+	right: 0;
+	background-color: #FFFFFF;
+	-webkit-transition: all 1s;
+	&.close{
+		opacity: 0;
+	}
+	&:after{
+		content: '';
+		display: block;
+		width: 40px;
+		height: 40px;
+		border-radius: 50%;
+		position: absolute;
+		top: 50%;
+		left: 50%;
+		margin-top: -20px;
+		margin-left: -20px;
+		background-color: #4fc3f7;
+		-webkit-animation: after 2s 0s infinite;
+	}
+	&:before{
+		content: '';
+		display: block;
+		width: 40px;
+		height: 40px;
+		border-radius: 50%;
+		position: absolute;
+		top: 50%;
+		left: 50%;
+		margin-top: -20px;
+		margin-left: -20px;
+		background-color: #6cc88a;
+		-webkit-animation: before 2s 0s infinite;
+	}
+	@-webkit-keyframes before{
+		0%{
+			-webkit-transform: translateX(100px);
+		}
+		50%{
+			-webkit-transform: translateX(-100px);
+		}
+		100%{
+			-webkit-transform: translateX(100px);
+		}
+	}
+	@-webkit-keyframes after{
+		0%{
+			-webkit-transform: translateX(-100px);
+		}
+		50%{
+			-webkit-transform: translateX(100px);
+		}
+		100%{
+			-webkit-transform: translateX(-100px);
+		}
+	}
+}
+*/
 .data {
   display: none;
 }
@@ -1323,40 +1388,41 @@ a.block {
 }
 #upload #review .controlBar {
   width: 100%;
-  height: 60px;
+  height: 94px;
   position: absolute;
   bottom: 0;
-}
-#upload #review .controlBar:before {
-  content: '';
-  display: block;
-  width: 100%;
-  height: 100%;
-  position: absolute;
-  top: 0px;
-  left: 0px;
-  background-color: #C2C2C2;
-  opacity: 0.6;
+  background-image: url('../image/editimgbt.png');
+  background-size: 574px 94px;
+  background-repeat: no-repeat;
+  background-position: 50% 50%;
+  background-color: #258FB6;
 }
 #upload #review .controlBar button {
-  width: 25%;
-  height: 60px;
+  height: 94px;
   position: absolute;
-  background: #FFA400;
+  font-size: 30px;
+  color: #FFFFFF;
+  line-height: 99999px;
   outline: none;
   border: none;
+  background-color: transparent;
+  padding: 0;
 }
 #upload #review .controlBar .close {
-  left: 0px;
+  width: 206px;
+  right: 110px;
 }
 #upload #review .controlBar .left {
-  left: 25%;
+  width: 108px;
+  left: 0;
 }
 #upload #review .controlBar .right {
-  left: 50%;
+  width: 108px;
+  right: 0;
 }
 #upload #review .controlBar .submit {
-  left: 75%;
+  width: 206px;
+  left: 110px;
 }
 #taskrank .pgTop {
   height: 82px;
@@ -1598,68 +1664,6 @@ a.block {
   background-size: cover;
   background-position: 50% 50%;
   background-repeat: no-repeat;
-}
-#loading {
-  position: absolute;
-  top: 0;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  background-color: #FFFFFF;
-  transition: all 1s;
-}
-#loading.close {
-  opacity: 0;
-}
-#loading:after {
-  content: '';
-  display: block;
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  margin-top: -20px;
-  margin-left: -20px;
-  background-color: #4fc3f7;
-  animation: after 2s 0s infinite;
-}
-#loading:before {
-  content: '';
-  display: block;
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  margin-top: -20px;
-  margin-left: -20px;
-  background-color: #6cc88a;
-  animation: before 2s 0s infinite;
-}
-@keyframes before {
-  0% {
-    transform: translateX(100px);
-  }
-  50% {
-    transform: translateX(-100px);
-  }
-  100% {
-    transform: translateX(100px);
-  }
-}
-@keyframes after {
-  0% {
-    transform: translateX(-100px);
-  }
-  50% {
-    transform: translateX(100px);
-  }
-  100% {
-    transform: translateX(-100px);
-  }
 }
 /* Print styles
 -------------------------------------------------------------------------------*/

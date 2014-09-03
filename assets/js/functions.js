@@ -46,7 +46,7 @@
 	var _bdhmProtocol = (("https:" == document.location.protocol) ? " https://" : " http://");
 	document.write(unescape("%3Cscript src='" + _bdhmProtocol + "hm.baidu.com/h.js%3Fb815daa1d02964fc5048838a34259329' type='text/javascript'%3E%3C/script%3E"));
 	$(document).ready(function(){
-		$('body a:eq(0)').hide();
+		//$('body a:eq(0)').hide();
 	});
 })();
 
@@ -600,7 +600,7 @@
 					if(result.state != 0){
 						//$cache.submit.html("您已经发布任务请勿重复提交").css('backgroundColor', '#c2c2c2');
 						//submitLock = true;
-						window.location.href = './index.html';
+						//window.location.href = './index.html';
 					}
 					var img, imgIndex = 0, imgList = '';
 					for (img in result) {
@@ -628,6 +628,7 @@
 				alert('对不起, 最多只能上传9张!');
 				return;
 			}
+			$cache.review.show();
 			var file = e.target.files[0];
 			if(!file){ return false; }
 			//console.log(file);
@@ -637,7 +638,7 @@
 			image = new Image();
 			image.onload = function() {
 				//imageLoad(this);
-				$cache.review.show();
+				
 				imgLock = false;
 				$cache.img.css('backgroundImage', 'url('+imgsrc+')');
 				imgW = image.width;
