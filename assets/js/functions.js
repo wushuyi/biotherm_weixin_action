@@ -927,6 +927,8 @@
 						$('.name', $cache.tmpHtml).html(row.username);
 						if(row.userimg){
 							$('.portrait', $cache.tmpHtml).css('backgroundImage', 'url('+row.userimg+')');
+						}else{
+							$('.portrait', $cache.tmpHtml).css('backgroundImage', 'url(./assets/image/no_img.jpg)');
 						}
 						$('.tit', $cache.tmpHtml).html(row.taskname);
 						$('.cent', $cache.tmpHtml).html(row.content);
