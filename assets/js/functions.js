@@ -340,7 +340,7 @@
 							});
 							break;
 						case 'no submit':
-							$cache.lqrwBtn.html('继续任务').on('click', function() {
+							$cache.lqrwBtn.html('完成任务').on('click', function() {
 								window.location.href = './upload.html';
 							});
 							break;
