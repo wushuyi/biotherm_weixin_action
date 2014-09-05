@@ -275,7 +275,6 @@ a.block {
   margin-left: 164px;
   padding-right: 30px;
   background-color: #FFA400;
-  background-image: url('../image/icon_6.png');
   background-repeat: no-repeat;
   background-position: 250px 22px;
   background-size: 17px auto;
@@ -480,9 +479,9 @@ a.block {
   left: 50%;
   margin-left: -285px;
   outline: none;
-  background-image: url('../image/icon_14.png'), url('../image/icon_6.png');
+  background-image: url('../image/icon_14.png');
   background-repeat: no-repeat;
-  background-position: 130px 14px, 530px 24px;
+  background-position: 130px 14px;
 }
 #main #yqdz1 .goback {
   width: 570px;
@@ -498,7 +497,6 @@ a.block {
   left: 50%;
   margin-left: -285px;
   outline: none;
-  background-image: url('../image/icon_6.png');
   background-repeat: no-repeat;
   background-position: 530px 24px;
 }
@@ -580,9 +578,9 @@ a.block {
   left: 50%;
   margin-left: -285px;
   outline: none;
-  background-image: url('../image/icon_14.png'), url('../image/icon_6.png');
+  background-image: url('../image/icon_14.png');
   background-repeat: no-repeat;
-  background-position: 130px 14px, 530px 24px;
+  background-position: 130px 14px;
 }
 #main #yqdz2 .goback {
   width: 570px;
@@ -598,7 +596,6 @@ a.block {
   left: 50%;
   margin-left: -285px;
   outline: none;
-  background-image: url('../image/icon_6.png');
   background-repeat: no-repeat;
   background-position: 530px 24px;
 }
@@ -691,7 +688,6 @@ a.block {
   left: 50%;
   margin-left: -285px;
   outline: none;
-  background-image: url('../image/icon_6.png');
   background-repeat: no-repeat;
   background-position: 440px 24px;
 }
@@ -761,7 +757,6 @@ a.block {
   left: 50%;
   margin-left: -285px;
   outline: none;
-  background-image: url('../image/icon_6.png');
   background-repeat: no-repeat;
   background-position: 530px 24px;
 }
@@ -811,7 +806,6 @@ a.block {
   left: 50%;
   margin-left: -285px;
   outline: none;
-  background-image: url('../image/icon_6.png');
   background-repeat: no-repeat;
   background-position: 360px 24px;
 }
@@ -1366,7 +1360,6 @@ a.block {
   background-color: #FFA400;
   border-radius: 8px;
   cursor: pointer;
-  background-image: url('../image/icon_6.png');
   background-repeat: no-repeat;
   background-position: 540px 24px;
 }
