@@ -552,19 +552,21 @@
 		this.pubInit();
 		this.pubScroll(false);
 		var imgArr = [];
-		var imgW, imgH, scale, status=0, imgLock = true, image, imgsrc, file;;
-		
+		var imgW, imgH, scale, status=0, imgLock = true, image, imgsrc, file;
+
+
         Array.prototype.taskRemove = function(dx) {
-            　		if(isNaN(dx)||dx>this.length){return false;}
-            　　		for(var i=0,n=0;i<this.length;i++)
-                　		　{
-            　　		　　if(this[i]!=this[dx])
-                    　　		　　{
-                　	　　　　　this[n++]=this[i]
-                　		　　　}
-            　		　}
-            　		　this.length-=1
-            　		};
+            if (isNaN(dx) || dx > this.length) {
+                return false
+            }
+            for (var i = 0,
+                     n = 0; i < this.length; i++) {
+                if (this[i] != this[dx]) {
+                    this[n++] = this[i]
+                }
+            }
+            this.length -= 1
+        };
 		
 		$cache.upImg = $('#upImg');
 		$cache.textCent = $('#upload .cent');
@@ -582,6 +584,14 @@
 		$cache.btn_L = $('.left', $cache.review);
 		$cache.btn_R = $('.right', $cache.review);
 		$cache.btn_sub = $('.submit', $cache.review);
+
+        $cache.fontNum = $('#fontNum');
+        $cache.textCent.on('keyup', function(e){
+            var $self = $(this);
+            var maxLength = 140;
+            var num = maxLength - $self.val().length;
+            $cache.fontNum.html(num);
+        });
 		
 		var submitLock = false;
 		var taskid = $.cookie('taskid');
