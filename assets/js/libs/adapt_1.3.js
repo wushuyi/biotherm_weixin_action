@@ -133,4 +133,15 @@
 	adaptUILayout.adapt(640);
 	jQuery(window).bind( 'orientationchange', function(e){
 		adaptUILayout.adapt(640);
-	});
+        switch(window.orientation) {
+            case 0: // Portrait
+            case 180: // Upside-down Portrait
+// Javascript to setup Portrait view
+                break;
+            case -90: // Landscape: turned 90 degrees counter-clockwise
+            case 90: // Landscape: turned 90 degrees clockwise
+// Javascript to steup Landscape view
+                alert("为了给您更好的体验效果请使用竖屏!");
+                break;
+        }
+    });
