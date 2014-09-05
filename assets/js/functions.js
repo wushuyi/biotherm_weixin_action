@@ -585,6 +585,7 @@
 		$cache.btn_R = $('.right', $cache.review);
 		$cache.btn_sub = $('.submit', $cache.review);
 
+        /*
         $cache.fontNum = $('#fontNum');
         $cache.textCent.on('keyup', function(e){
             var $self = $(this);
@@ -592,6 +593,7 @@
             var num = maxLength - $self.val().length;
             $cache.fontNum.html(num);
         });
+        */
 		
 		var submitLock = false;
 		var taskid = $.cookie('taskid');
