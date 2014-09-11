@@ -243,7 +243,7 @@
 		$cache.popHdxqX = $('.popHdxqX', $cache.popHdxqX);
 
         //alert
-        /*
+
         function clickLoop(){
             $('.hjmdBtn').one('click', function(e){
                 e.preventDefault();
@@ -253,7 +253,7 @@
             });
         }
         clickLoop();
-        */
+
 
 		var isFocus = false;
 
@@ -281,7 +281,7 @@
 				}
 			},
 			error : function() {
-				alert('加载失败,请检查您的网络!');
+				//alert('加载失败,请检查您的网络!');
 			}
 		});
 		
@@ -347,7 +347,7 @@
 									},
 									error : function() {
 										lqrwBtnLock = false;
-										alert('加载失败,请检查您的网络!');
+										//alert('加载失败,请检查您的网络!');
 									}
 								});
 							});
@@ -393,7 +393,7 @@
 				pgFun.onLoad();
 			},
 			error : function() {
-				alert('加载失败,请检查您的网络!');
+				//alert('加载失败,请检查您的网络!');
 			}
 		});
 
@@ -481,7 +481,7 @@
 				},
 				error : function() {
 					subAllLock = false;
-					alert('加载失败,请检查您的网络!');
+					//alert('加载失败,请检查您的网络!');
 				}
 			});
 		});
@@ -527,7 +527,7 @@
 					},
 					error : function() {
 						subCodeLock = false;
-						alert('加载失败,请检查您的网络!');
+						//alert('加载失败,请检查您的网络!');
 					}
 				});
 			};
@@ -551,7 +551,7 @@
 				},
 				error : function() {
 					subCodeLock = false;
-					alert('加载失败,请检查您的网络!');
+					//alert('加载失败,请检查您的网络!');
 				}
 			});
 		});
@@ -644,7 +644,7 @@
 				pgFun.onLoad();
 			},
 			error : function() {
-				alert('加载失败,请检查您的网络!');
+				//alert('加载失败,请检查您的网络!');
 			}
 		});
 
@@ -844,7 +844,7 @@
 					}
 				},
 				error : function() {
-					alert('加载失败,请检查您的网络!');
+					//alert('加载失败,请检查您的网络!');
 				}
 			});
 		});
@@ -879,7 +879,7 @@
 					}
 				},
 				error : function() {
-					alert('加载失败,请检查您的网络!');
+					//alert('加载失败,请检查您的网络!');
 				}
 			});
 		});
@@ -947,7 +947,7 @@
 				pgFun.onLoad();
 			},
 			error : function() {
-				alert('加载失败,请检查您的网络!');
+				//alert('加载失败,请检查您的网络!');
 			}
 		});
 		$cache.rankCent.on('click', '.rankInfo', function(){
@@ -1006,7 +1006,7 @@
 				pgFun.onLoad();
 			},
 			error : function() {
-				alert('加载失败,请检查您的网络!');
+				//alert('加载失败,请检查您的网络!');
 			}
 		});
 		
@@ -1117,7 +1117,7 @@
 					pgFun.onLoad();
 				},
 				error : function() {
-					alert('加载失败,请检查您的网络!');
+					//alert('加载失败,请检查您的网络!');
 				}
 			});
 		};
@@ -1181,7 +1181,7 @@
 					pgFun.onLoad();
 				},
 				error : function() {
-					alert('加载失败,请检查您的网络!');
+					//alert('加载失败,请检查您的网络!');
 				}
 			});
 		};
@@ -1231,7 +1231,7 @@
 					pgFun.onLoad();
 				},
 				error : function() {
-					alert('加载失败,请检查您的网络!');
+					//alert('加载失败,请检查您的网络!');
 				}
 			});
 		};
@@ -1348,7 +1348,7 @@
 							},
 							error : function() {
 								loveBtnLock = false;
-								alert('加载失败,请检查您的网络!');
+								//alert('加载失败,请检查您的网络!');
 							}
 						});
 					});
@@ -1376,8 +1376,7 @@
 						}
 					},
 					error : function() {
-						focus();
-						alert('加载失败,请检查您的网络!');
+						//alert('加载失败,请检查您的网络!');
 					}
 				});
 				break;
