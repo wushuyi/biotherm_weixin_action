@@ -1286,7 +1286,49 @@
 				}else{
 					onBridgeReady();
 				}
-				
+                var loveBtnLock = false;
+                function loveBtnFun(){
+                    if(loveBtnLock){
+                        return false;
+                    }
+                    loveBtnLock = true;
+                    var taskuserid = url.fparam('taskuserid');
+                    var data = {
+                        taskuserid: taskuserid
+                    };
+                    $.ajax({
+                        type : "POST",
+                        dataType : 'json',
+                        url : "../lovetask.ashx",
+                        data : data,
+                        success : function(data) {
+                            loveBtnLock = false;
+                            //console.log(data);
+                            if (data.result == 'success') {
+                                alert('点赞成功, 感谢您的支持!');
+                                $cache.loveBtn.html(parseInt($cache.loveBtn.html()) + 1);
+                            } else if (data.result == 'failed') {
+                                switch(data.jsonResponse) {
+                                    case 'have support':
+                                        alert('您已经支持过了!');
+                                        break;
+                                    case 'you cant':
+                                        alert('您不能为自己点赞!');
+                                        break;
+                                    case 'over':
+                                        alert('对不起,活动已过期!');
+                                        break;
+                                    default:
+                                        alert('服务器错误!');
+                                };
+                            }
+                        },
+                        error : function() {
+                            loveBtnLock = false;
+                            //alert('加载失败,请检查您的网络!');
+                        }
+                    });
+                }
 				function unfocus() {
 					$cache.yqdz3 = $('#yqdz3');
 					$cache.yqdz3.show().on('click', '.weixin', function(e) {
@@ -1301,56 +1343,17 @@
 					}).on('click', '.submit', function(e) {
 						window.location.href = "./index.html";
 					}).on('click', '.loveBtn', function(e) {
-						alert('请先关注,碧欧泉微信!');
+                        loveBtnFun();
 					});
 					getusertaskfriend();
-				};
-				var loveBtnLock = false;
+				}
+
 				function focus() {
 					$cache.yqdz4 = $('#yqdz4');
 					$cache.yqdz4.show().on('click', '.submit', function(e) {
 						window.location.href = "./index.html";
 					}).on('click', '.loveBtn', function(e) {
-						if(loveBtnLock){
-							return false;
-						}
-						loveBtnLock = true;
-						var taskuserid = url.fparam('taskuserid');
-						var data = {
-							taskuserid: taskuserid
-						};
-						$.ajax({
-							type : "POST",
-							dataType : 'json',
-							url : "../lovetask.ashx",
-							data : data,
-							success : function(data) {
-								loveBtnLock = false;
-								//console.log(data);
-								if (data.result == 'success') {
-									alert('点赞成功, 感谢您的支持!');
-									$cache.loveBtn.html(parseInt($cache.loveBtn.html()) + 1);
-								} else if (data.result == 'failed') {
-									switch(data.jsonResponse) {
-										case 'have support':
-											alert('您已经支持过了!');
-											break;
-										case 'you cant':
-											alert('您不能为自己点赞!');
-											break;
-										case 'over':
-											alert('对不起,活动已过期!');
-											break;
-										default:
-											alert('服务器错误!');
-									};
-								}
-							},
-							error : function() {
-								loveBtnLock = false;
-								//alert('加载失败,请检查您的网络!');
-							}
-						});
+                        loveBtnFun();
 					});
 					getusertaskfriend();
 				};
