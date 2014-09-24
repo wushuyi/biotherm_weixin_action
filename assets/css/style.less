@@ -1686,6 +1686,101 @@ a.block {
   }
 }
 
+#listwinners {
+  .pgTop {
+    height: 82px;
+    padding-left: 40px;
+    color: #FFFFFF;
+    font-size: 32px;
+    line-height: 70px;
+    text-align: center;
+    background-color: #258FB6;
+    background-image: url('../image/icon_10.png');
+    background-repeat: no-repeat;
+    background-size: 33px auto;
+    background-position: 150px 20px;
+    letter-spacing: 4px;
+    position: relative;
+  }
+  #rankBox {
+    position: relative;
+    .rankTop {
+      height: 74px;
+      position: relative;
+      .logo {
+        width: 130px;
+        height: 25px;
+        position: absolute;
+        top: 30px;
+        left: 24px;
+        z-index: 2;
+        background-repeat: no-repeat;
+        background-image: url('../image/biotherm.png');
+        background-size: 100% auto;
+      }
+      .topTit {
+        height: 58px;
+        padding-left: 80px;
+        padding-right: 60px;
+        position: absolute;
+        top: 14px;
+        right: 0px;
+        font-size: 34px;
+        line-height: 58px;
+        text-align: center;
+        color: #20708F;
+        letter-spacing: 2px;
+        background-color: #FFFFFF;
+
+        b {
+          display: block;
+          position: absolute;
+          left: 0px;
+          z-index: 2;
+          border-left: 20px solid #00445E;
+          border-top: 33px solid transparent;
+          border-bottom: 33px solid transparent;
+        }
+        &:before {
+          content: '';
+          display: block;
+          height: 4px;
+          width: 100%;
+          position: absolute;
+          left: 0px;
+          top: 4px;
+          background-color: #A0C2CF;
+        }
+        &:after {
+          content: '';
+          display: block;
+          height: 4px;
+          width: 100%;
+          position: absolute;
+          left: 0px;
+          bottom: 4px;
+          background-color: #A0C2CF;
+        }
+      }
+    }
+    b.line {
+      display: block;
+      width: 4px;
+      height: 100%;
+      position: absolute;
+      top: 0px;
+      left: 72px;
+      background-color: #9AB4BF;
+    }
+    .winlist{
+      width: 563px;
+      height: 1153px;
+      background-repeat: no-repeat;
+      background-image: url('../image/winners.png');
+      background-size: 100% auto;
+    }
+  }
+}
 /* Print styles
 -------------------------------------------------------------------------------*/
 @media print {

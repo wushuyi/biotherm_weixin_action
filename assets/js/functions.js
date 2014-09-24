@@ -242,19 +242,6 @@
 		$cache.popHdxq = $('.popHdxq', $cache.pop);
 		$cache.popHdxqX = $('.popHdxqX', $cache.popHdxqX);
 
-        //alert
-
-        function clickLoop(){
-            $('.hjmdBtn').one('click', function(e){
-                e.preventDefault();
-                e.stopPropagation();
-                alert("获奖名单未开始,敬请期待!");
-                clickLoop();
-            });
-        }
-        clickLoop();
-
-
 		var isFocus = false;
 
 		function getDate(start, end) {
@@ -1405,6 +1392,10 @@
 			default:
 		};
 	};
+    pgFun.listwinners = function(){
+        this.pubInit();
+        this.pubScroll();
+    };
 	global[fun] = pgFun;
 	global[scroll] = pgScroll;
 })('fun', 'pgScroll', this);
@@ -1421,7 +1412,8 @@
 			'upload' : 'upload',
 			'taskrank' : 'taskrank',
 			'taskhistory' : 'taskhistory',
-			'main' : 'main'
+			'main' : 'main',
+            'listwinners': 'listwinners'
 		};
 		var pgName = window.pgName;
 		fun[pgNameList[pgName]]();
