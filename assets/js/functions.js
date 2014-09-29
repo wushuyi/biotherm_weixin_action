@@ -959,7 +959,7 @@
 			if (test == 0) {
 				num = mNum.split('')[1];
 			} else {
-				num = test;
+				num = mNum;
 			}
 			return num;
 		};
