@@ -622,6 +622,7 @@
 							imgArr.push(result[img]);
 						}
 					}
+					$('#topText .tit').text(result.taskname);
 					$('.cent', $cache.titBox).html(result.content);
 					$cache.imgListUl.html(imgList);
 					pgScroll[0].refresh();
